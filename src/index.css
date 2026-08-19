@@ -1068,66 +1068,348 @@ h1 {
   font-weight: 600;
 }
 
-.contact-ctas {
+.contact-grid {
+  margin-top: clamp(48px, 7vh, 76px);
+  display: grid;
+  grid-template-columns: 1.02fr 0.98fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.contact-col {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+
+/* ---- WhatsApp : priorité visuelle ---- */
+.wa-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--card);
+  border: 1px solid var(--beige-25);
+  border-left: 3px solid var(--beige);
+  padding: clamp(24px, 3vw, 36px);
+}
+
+.wa-top {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-top: 44px;
-  flex-wrap: wrap;
+  gap: 14px;
 }
 
-.contact-lines {
-  margin-top: clamp(50px, 8vh, 80px);
+.wa-ic {
+  flex: none;
+  width: 46px;
+  height: 46px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(228, 217, 190, 0.08);
+  border: 1px solid var(--beige-25);
+  color: var(--beige);
+}
+
+.wa-ic svg {
+  width: 22px;
+  height: 22px;
+}
+
+.wa-top h3 {
+  margin-top: 4px;
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+}
+
+.wa-top h3 span {
+  color: var(--beige);
+}
+
+.wa-top .chip {
+  margin-left: auto;
+  flex: none;
+}
+
+.wa-num {
+  font-weight: 800;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+  color: var(--white);
+}
+
+.wa-card .btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wa-note {
+  color: var(--muted);
+  font-weight: 300;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+/* ---- Formulaire ---- */
+.form-card {
+  display: flex;
+  flex-direction: column;
   gap: 18px;
+  background: var(--card);
+  border: 1px solid var(--beige-10);
+  padding: clamp(24px, 3vw, 36px);
 }
 
-.cline {
-  border-top: 1px solid var(--beige-10);
-  padding-top: 20px;
-}
-
-.cline .k {
-  font-size: 0.66rem;
+.form-card .card-kicker a {
+  color: var(--beige);
+  text-decoration: none;
+  text-transform: none;
+  letter-spacing: 0.02em;
   font-weight: 600;
-  letter-spacing: 0.22em;
+}
+
+.form-card .card-kicker a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.f-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field > span {
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
-.cline a,
-.cline .v {
-  display: inline-block;
-  margin-top: 12px;
+.field input,
+.field textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--beige-15);
+  border-radius: 0;
   color: var(--white);
-  font-weight: 600;
-  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
-  letter-spacing: 0.01em;
-  text-decoration: none;
-  position: relative;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 400;
+  padding: 13px 15px;
+  transition: border-color 0.3s ease, background 0.3s ease;
 }
 
-.cline a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  height: 2px;
-  width: 0;
-  background: var(--beige);
-  transition: width 0.3s ease;
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--beige);
+  background: rgba(228, 217, 190, 0.05);
 }
 
-.cline a:hover {
+.field input::placeholder,
+.field textarea::placeholder {
+  color: rgba(245, 243, 239, 0.32);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+/* Honeypot anti-spam — invisible */
+.hp {
+  position: absolute !important;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.form-card .btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-card .btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+}
+
+.form-ok,
+.news-ok {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid var(--beige-25);
+  background: rgba(228, 217, 190, 0.06);
+  color: var(--beige);
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.55;
+  padding: 14px 16px;
+}
+
+.form-ok svg,
+.news-ok svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+}
+
+/* ---- Calendly (inline widget) ---- */
+.cal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  background: rgba(10, 10, 10, 0.72);
+  border: 1px solid var(--beige-10);
+  border-radius: 10px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding: clamp(20px, 2.4vw, 28px);
+}
+
+.cal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.cal-head h3 {
+  margin-top: 6px;
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: -0.01em;
+}
+
+.cal-head h3 span {
+  color: var(--beige);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.cal-sub {
+  color: var(--muted);
+  font-weight: 300;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.cal-frame {
+  border: 1px solid var(--beige-10);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+.cal-frame iframe {
+  display: block;
+  width: 100%;
+  height: 660px;
+  border: 0;
+}
+
+.cal-note {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* ---- Newsletter ---- */
+.news {
+  margin-top: clamp(56px, 9vh, 90px);
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 30px;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--beige-10);
+  padding: clamp(26px, 3.4vw, 44px);
+}
+
+.news h4 {
+  font-weight: 900;
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  letter-spacing: -0.02em;
+}
+
+.news h4 span {
   color: var(--beige);
 }
 
-.cline a:hover::after {
-  width: 100%;
+.news .n-sub {
+  margin-top: 10px;
+  color: var(--muted);
+  font-weight: 300;
+  font-size: 0.9rem;
+  line-height: 1.65;
 }
 
-.cline .v .clock {
+.news form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.news-row {
+  display: flex;
+  gap: 12px;
+}
+
+.news input {
+  flex: 1;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--beige-15);
+  border-radius: 0;
+  color: var(--white);
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.92rem;
+  padding: 14px 16px;
+  transition: border-color 0.3s ease;
+}
+
+.news input:focus {
+  outline: none;
+  border-color: var(--beige);
+}
+
+.news input::placeholder {
+  color: rgba(245, 243, 239, 0.32);
+}
+
+.news .btn {
+  flex: none;
+}
+
+.news .btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.clock {
   color: var(--beige);
   font-variant-numeric: tabular-nums;
 }
@@ -1152,6 +1434,20 @@ h1 {
 
 .footer .fb b {
   color: var(--beige);
+}
+
+.footer .f-wa {
+  color: var(--beige);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.footer .f-wa:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .footer .fl {
@@ -1254,8 +1550,34 @@ body.loaded .reveal {
     max-width: 420px;
   }
 
-  .contact-lines {
+  .contact-grid {
     grid-template-columns: 1fr;
+  }
+
+  .news {
+    grid-template-columns: 1fr;
+  }
+
+  .cal-frame iframe {
+    height: 600px;
+  }
+}
+
+@media (max-width: 560px) {
+  .f-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .news-row {
+    flex-direction: column;
+  }
+
+  .wa-top .chip {
+    display: none;
+  }
+
+  .cal-frame iframe {
+    height: 540px;
   }
 }
 
