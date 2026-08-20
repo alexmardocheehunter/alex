@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "./firebase";
 
 /* ================================================================
    ALEX MARDOCHÉE — Automatisation & IA pour les entreprises d'Abidjan
@@ -295,7 +297,7 @@ export default function App() {
 
   const [contactStatus, setContactStatus] = useState<"idle" | "sending" | "ok">("idle");
   const [sentTo, setSentTo] = useState("");
-  const [newsStatus, setNewsStatus] = useState<"idle" | "sending" | "ok">("idle");
+  const [newsStatus, setNewsStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
 
   /* Révélation hero + nav + barre de progression */
   useEffect(() => {
@@ -399,17 +401,25 @@ export default function App() {
     }
   };
 
-  /* Astuces gratuites — email + timestamp ; à brancher sur Firestore */
-  const onNewsSubmit = (e: FormEvent<HTMLFormElement>) => {
+  /* Astuces gratuites — enregistrement dans Firestore (collection "newsletter") */
+  const onNewsSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const email = String(new FormData(form).get("email") ?? "").trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
     setNewsStatus("sending");
-    window.setTimeout(() => {
+    try {
+      await addDoc(collection(db, "newsletter"), {
+        email,
+        createdAt: serverTimestamp(),
+        source: "newsletter_form"
+      });
       setNewsStatus("ok");
       form.reset();
-    }, 700);
+    } catch (err) {
+      console.error("Erreur lors de l'enregistrement de l'email newsletter:", err);
+      setNewsStatus("error");
+    }
   };
 
   return (
@@ -996,6 +1006,11 @@ export default function App() {
               <p className="news-ok" role="status">
                 <IconCheck />
                 <span>C'est noté — première astuce dans votre boîte cette semaine.</span>
+              </p>
+            )}
+            {newsStatus === "error" && (
+              <p className="news-error" role="status" style={{ color: "#ef4444", fontSize: "0.875rem", marginTop: "0.5rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <span>Une erreur est survenue lors de l'inscription. Veuillez réessayer.</span>
               </p>
             )}
           </form>
