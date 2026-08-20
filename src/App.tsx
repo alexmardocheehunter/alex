@@ -744,7 +744,7 @@ export default function App() {
         </div>
 
         <div className="about-grid">
-          {/* Cadre photo — photo à insérer */}
+          {/* Cadre photo */}
           <div className="rv" style={{ ["--d" as string]: ".08s" }}>
             <figure className="photo-frame">
               <span className="tick t1" aria-hidden="true" />
@@ -752,10 +752,11 @@ export default function App() {
               <span className="tick t3" aria-hidden="true" />
               <span className="tick t4" aria-hidden="true" />
               <div className="pf-inner">
-                <span className="pf-mono" aria-hidden="true">
-                  YAK
-                </span>
-                <span className="pf-label">Photo — à insérer</span>
+                <img
+                  src="/photo-alex.png"
+                  alt="Yao Alex Mardochée KOFFI — Responsable de la Transformation Digitale"
+                  loading="lazy"
+                />
               </div>
               <figcaption className="pf-meta">
                 <span className="pf-name">
