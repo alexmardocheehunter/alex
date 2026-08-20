@@ -14,7 +14,9 @@ const CONTACT_EMAIL = "alexmardochee0@gmail.com";
 /* Widget inline public — aucune authentification requise côté client.
    (Ne jamais exposer de Personal Access Token dans ce fichier.) */
 const CALENDLY_EMBED =
-  "https://calendly.com/alexmardochee0/30min?hide_gdpr_banner=1&hide_landing_page_details=1";
+  "https://calendly.com/alexmardochee0/30min?hide_gdpr_banner=1&hide_landing_page_details=1" +
+  /* Thème officiel Calendly — aligné sur la palette du site */
+  "&background_color=0a0a0a&text_color=f5f3ef&primary_color=e4d9be";
 
 /* À brancher plus tard : Firebase Cloud Function → SendGrid/SMTP → alexmardochee0@gmail.com */
 const FORM_ENDPOINT = "";
