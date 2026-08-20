@@ -423,6 +423,7 @@ export default function App() {
           <a href="#preuves">Histoires</a>
           <a href="#methode">Méthode</a>
           <a href="#services">Services</a>
+          <a href="#a-propos">À propos</a>
           <a href="#contact">Contact</a>
         </nav>
         <a className="cta" href="#contact">
@@ -455,9 +456,8 @@ export default function App() {
               <b>Abidjan — Côte d'Ivoire</b> · Automatisation &amp; IA pour PME
             </span>
             <h1 className="reveal" style={{ ["--d" as string]: ".25s" }}>
-              Les <span className="hl">10 heures par semaine</span> que vous
-              perdez en tâches répétitives — un système peut les faire à votre
-              place.
+              Faites travailler l'intelligence artificielle dans{" "}
+              <span className="hl">votre business.</span>
             </h1>
             <p className="sub reveal" style={{ ["--d" as string]: ".4s" }}>
               J'automatise les vrais problèmes des entreprises ivoiriennes :
@@ -715,10 +715,117 @@ export default function App() {
         </div>
       </section>
 
+      {/* ------------------------------ À PROPOS ------------------------------ */}
+      <section className="section" id="a-propos">
+        <div className="sec-head rv">
+          <div>
+            <span className="eyebrow">04 — À propos</span>
+            <h2 className="sec-title">
+              Le pont entre la rigueur du chiffre{" "}
+              <span className="it">et la puissance de la machine.</span>
+            </h2>
+          </div>
+          <p className="sec-note">
+            Un comptable qui parle le langage des algorithmes — et qui a vu de
+            l'intérieur ce que les tâches répétitives coûtent vraiment.
+          </p>
+        </div>
+
+        <div className="about-grid">
+          {/* Cadre photo — photo à insérer */}
+          <div className="rv" style={{ ["--d" as string]: ".08s" }}>
+            <figure className="photo-frame">
+              <span className="tick t1" aria-hidden="true" />
+              <span className="tick t2" aria-hidden="true" />
+              <span className="tick t3" aria-hidden="true" />
+              <span className="tick t4" aria-hidden="true" />
+              <div className="pf-inner">
+                <span className="pf-mono" aria-hidden="true">
+                  YAK
+                </span>
+                <span className="pf-label">Photo — à insérer</span>
+              </div>
+              <figcaption className="pf-meta">
+                <span className="pf-name">
+                  Yao Alex Mardochée KOFFI
+                  <small>Responsable de la Transformation Digitale · DC-KNOWING CGA</small>
+                </span>
+                <span className="flag" aria-hidden="true" title="Côte d'Ivoire">
+                  <i className="f1" />
+                  <i className="f2" />
+                  <i className="f3" />
+                </span>
+              </figcaption>
+            </figure>
+          </div>
+
+          {/* Bio + certifications */}
+          <div>
+            <div className="about-txt">
+              <p className="rv" style={{ ["--d" as string]: ".1s" }}>
+                Je suis <b>Yao Alex Mardochée KOFFI</b> — comptable de
+                formation, aujourd'hui Responsable de la Transformation
+                Digitale chez <b>DC-KNOWING CGA</b>. J'ai vu de l'intérieur ce
+                que les tâches répétitives coûtent à une entreprise : des
+                journées perdues, des erreurs, des équipes épuisées par des
+                process qu'un algorithme règle en 3 secondes.
+              </p>
+              <p className="bridge-line rv" style={{ ["--d" as string]: ".16s" }}>
+                Alors je suis devenu le pont entre{" "}
+                <b>la rigueur du chiffre</b> et{" "}
+                <b>la puissance de la machine</b>.
+              </p>
+            </div>
+
+            <p className="cert-kicker rv" style={{ ["--d" as string]: ".2s" }}>
+              Certifié, pas juste convaincu :
+            </p>
+            <div className="cert-grid">
+              <div className="cert rv" style={{ ["--d" as string]: ".22s" }}>
+                <span className="cert-ic" aria-hidden="true">🏆</span>
+                <div>
+                  <h3>Excel TOSA</h3>
+                  <p>95/100 — niveau Expert International</p>
+                </div>
+              </div>
+              <div className="cert rv" style={{ ["--d" as string]: ".28s" }}>
+                <span className="cert-ic" aria-hidden="true">🤖</span>
+                <div>
+                  <h3>Anthropic Certified</h3>
+                  <p>Claude 101</p>
+                </div>
+              </div>
+              <div className="cert rv" style={{ ["--d" as string]: ".34s" }}>
+                <span className="cert-ic" aria-hidden="true">🌐</span>
+                <div>
+                  <h3>Cisco Certified</h3>
+                  <p>Apply AI</p>
+                </div>
+              </div>
+              <div className="cert rv" style={{ ["--d" as string]: ".4s" }}>
+                <span className="cert-ic" aria-hidden="true">☁️</span>
+                <div>
+                  <h3>Google Cloud AI &amp; ML</h3>
+                  <p>
+                    <span className="cert-wip">En cours</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <blockquote className="conviction rv" style={{ ["--d" as string]: ".44s" }}>
+              <span className="conviction-k">Ma conviction</span>
+              Même depuis l'Afrique, on peut construire des systèmes aussi
+              efficaces que ceux de l'Occident !
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
       {/* ------------------------------ CONVERSION ------------------------------ */}
       <section className="section contact" id="contact">
         <div className="rv">
-          <span className="eyebrow">04 — On y va ?</span>
+          <span className="eyebrow">05 — On y va ?</span>
         </div>
         <h2 className="contact-giant rv" style={{ ["--d" as string]: ".08s" }}>
           Discutons<span className="dot">.</span>
@@ -913,6 +1020,7 @@ export default function App() {
           <a href="#preuves">Histoires</a>
           <a href="#methode">Méthode</a>
           <a href="#services">Services</a>
+          <a href="#a-propos">À propos</a>
           <a href="#contact">Contact</a>
         </nav>
       </footer>
