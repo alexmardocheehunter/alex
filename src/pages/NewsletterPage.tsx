@@ -5,6 +5,7 @@ export default function NewsletterPage() {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -12,6 +13,7 @@ export default function NewsletterPage() {
     const cleanFirst = firstName.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) return;
 
+    setErrorMessage("");
     setStatus("sending");
     try {
       await subscribeToNewsletter({
@@ -23,7 +25,9 @@ export default function NewsletterPage() {
       setEmail("");
       setFirstName("");
     } catch (err) {
-      console.error("Erreur newsletter:", err);
+      const message = err instanceof Error ? err.message : "Inscription impossible pour le moment.";
+      console.error("Erreur newsletter:", message);
+      setErrorMessage(message);
       setStatus("error");
     }
   };
@@ -57,6 +61,7 @@ export default function NewsletterPage() {
                 <span>Prénom</span>
                 <input
                   type="text"
+                  name="firstName"
                   placeholder="Votre prénom"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
@@ -68,6 +73,7 @@ export default function NewsletterPage() {
                 <span>Email professionnel ou personnel *</span>
                 <input
                   type="email"
+                  name="email"
                   required
                   placeholder="vous@entreprise.ci"
                   value={email}
@@ -91,7 +97,7 @@ export default function NewsletterPage() {
               )}
               {status === "error" && (
                 <div className="form-error">
-                  Une erreur est survenue lors de l'enregistrement. Veuillez réessayer.
+                  {errorMessage || "Une erreur est survenue lors de l'enregistrement. Veuillez réessayer."}
                 </div>
               )}
 

@@ -18,7 +18,7 @@ function setCors(response) {
 }
 
 function jsonError(response, status, message) {
-  return response.status(status).json({ message });
+  return response.status(status).json({ success: false, message });
 }
 
 exports.subscribeNewsletter = onRequest(
@@ -37,13 +37,34 @@ exports.subscribeNewsletter = onRequest(
     }
 
     const firestore = getFirestore();
-    const leadRef = await firestore.collection("newsletter").add({
-      firstName: firstName || "Abonné",
-      email,
-      source: sourcePage,
-      createdAt: FieldValue.serverTimestamp(),
-      brevoStatus: "pending",
-    });
+    let leadRef;
+    try {
+      const duplicate = await firestore
+        .collection("newsletter")
+        .where("email", "==", email)
+        .limit(1)
+        .get();
+
+      if (!duplicate.empty) {
+        return response.status(409).json({
+          success: false,
+          message: "Cet email est déjà inscrit.",
+        });
+      }
+
+      leadRef = await firestore.collection("newsletter").add({
+        firstName: firstName || "Abonné",
+        email,
+        source: sourcePage,
+        createdAt: FieldValue.serverTimestamp(),
+        brevoStatus: "pending",
+      });
+    } catch (error) {
+      console.error("Newsletter lead storage failed", {
+        error: error instanceof Error ? error.message : "unknown_error",
+      });
+      return jsonError(response, 500, "Impossible d'enregistrer votre inscription pour le moment.");
+    }
 
     const listId = Number(process.env.BREVO_LIST_ID);
     const apiKey = brevoApiKey.value();
@@ -68,12 +89,27 @@ exports.subscribeNewsletter = onRequest(
         }),
       });
 
+      const brevoBody = await brevoResponse.text();
       if (!brevoResponse.ok) {
+        if (brevoResponse.status === 400 && /duplicate|already/i.test(brevoBody)) {
+          await leadRef.update({ brevoStatus: "already_subscribed" });
+          return response.status(409).json({
+            success: false,
+            message: "Cet email est déjà inscrit.",
+          });
+        }
+        console.error("Brevo returned an error", {
+          status: brevoResponse.status,
+          body: brevoBody.slice(0, 500),
+        });
         throw new Error(`Brevo returned ${brevoResponse.status}`);
       }
 
       await leadRef.update({ brevoStatus: "synced", syncedAt: FieldValue.serverTimestamp() });
-      return response.status(201).json({ ok: true });
+      return response.status(201).json({
+        success: true,
+        message: "Inscription confirmée ! Vérifie ta boîte mail.",
+      });
     } catch (error) {
       console.error("Brevo synchronization failed", error);
       await leadRef.update({ brevoStatus: "error" });
@@ -86,11 +122,15 @@ function normalizeCourse(product) {
   const pricing = product.pricing || {};
   const currentPrice = pricing.current_price || pricing.currentPrice || {};
   const benefits = Array.isArray(product.benefits) ? product.benefits : [];
+  const category = typeof product.category === "object"
+    ? product.category?.label || product.category?.value
+    : product.category;
+  const pictures = product.pictures || {};
   return {
     id: String(product.id || product.slug),
     slug: String(product.slug || product.id),
     name: product.name || "Formation",
-    category: product.category || "Formation",
+    category: category || "Formation",
     description: product.description || "Formation pratique orientée résultats.",
     priceFormatted: currentPrice.formatted || pricing.formatted || "Sur la page Chariow",
     priceAmount: Number(currentPrice.amount || currentPrice.value || 0),
@@ -100,6 +140,7 @@ function normalizeCourse(product) {
     duration: product.duration || "À votre rythme",
     level: product.level || "Tous niveaux",
     chariowUrl: product.url || product.checkout_url || `https://chariow.com/${product.slug || product.id}`,
+    imageUrl: pictures.cover || pictures.thumbnail || "",
     benefits,
   };
 }
@@ -119,12 +160,40 @@ exports.listCourses = onRequest(
       url.searchParams.set("type", "course");
       url.searchParams.set("per_page", "100");
       const chariowResponse = await fetch(url, {
-        headers: { accept: "application/json", authorization: `Bearer ${apiKey}` },
+        headers: {
+          accept: "application/json",
+          authorization: `Bearer ${apiKey}`,
+        },
       });
-      if (!chariowResponse.ok) throw new Error(`Chariow returned ${chariowResponse.status}`);
-      const payload = await chariowResponse.json();
-      const products = Array.isArray(payload) ? payload : payload.data || payload.products || [];
-      return response.status(200).json({ courses: products.map(normalizeCourse) });
+      const body = await chariowResponse.text();
+      let payload = {};
+      try {
+        payload = body ? JSON.parse(body) : {};
+      } catch {
+        console.error("Chariow returned invalid JSON", { status: chariowResponse.status });
+      }
+      if (!chariowResponse.ok) {
+        console.error("Chariow returned an error", {
+          status: chariowResponse.status,
+          body: body.slice(0, 500),
+        });
+        return jsonError(response, 502, "Le catalogue Chariow est temporairement indisponible.");
+      }
+
+      const products = Array.isArray(payload)
+        ? payload
+        : Array.isArray(payload?.data?.data)
+          ? payload.data.data
+          : Array.isArray(payload?.data)
+            ? payload.data
+            : Array.isArray(payload?.products)
+              ? payload.products
+              : [];
+      const pagination = payload?.data?.pagination || null;
+      return response.status(200).json({
+        courses: products.map(normalizeCourse),
+        pagination,
+      });
     } catch (error) {
       console.error("Chariow synchronization failed", error);
       return jsonError(response, 502, "Le catalogue Chariow est temporairement indisponible.");

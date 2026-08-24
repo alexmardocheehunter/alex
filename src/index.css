@@ -2551,6 +2551,30 @@ main {
   .footer-bottom { display: block; }
   .footer-sign { display: block; margin-top: 10px; }
 }
+
+/* Article readability overrides */
+.article-title {
+  font-size: clamp(1.6rem, 3.3vw, 2.8rem);
+  line-height: 1.15;
+  letter-spacing: -.025em;
+  margin-bottom: .7rem;
+}
+
+.article-body,
+.article-body-wrapper {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+.article-body .article-p,
+.article-body .article-list {
+  margin-bottom: 1.35rem;
+}
+
+.blog-card {
+  min-height: 0;
+}
 /* SEO/GEO content blocks */
 .site-breadcrumbs {
   max-width: 1180px;

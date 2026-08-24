@@ -9,11 +9,15 @@ export default function FormationsPage() {
   const [courses, setCourses] = useState<Course[]>(COURSES);
   const [loading, setLoading] = useState(true);
   const [usingFallback, setUsingFallback] = useState(false);
+  const [error, setError] = useState("");
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
+    setLoading(true);
+    setError("");
 
-    fetch("/api/courses", { signal: controller.signal })
+    fetch("/api/proxy/products?type=course&per_page=20", { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("Catalogue indisponible");
         const payload = (await response.json()) as CourseApiResponse;
@@ -21,12 +25,15 @@ export default function FormationsPage() {
         else setUsingFallback(true);
       })
       .catch((error: unknown) => {
-        if ((error as Error).name !== "AbortError") setUsingFallback(true);
+        if ((error as Error).name !== "AbortError") {
+          setUsingFallback(true);
+          setError("Impossible de charger les formations. Veuillez réessayer plus tard.");
+        }
       })
       .finally(() => setLoading(false));
 
     return () => controller.abort();
-  }, []);
+  }, [retryKey]);
 
   return (
     <div className="formations-page">
@@ -55,7 +62,12 @@ export default function FormationsPage() {
 
         {loading && <p className="catalog-status">Actualisation du catalogue…</p>}
         {usingFallback && !loading && (
-          <p className="catalog-status muted">Catalogue local affiché — la synchronisation Chariow sera réessayée au prochain chargement.</p>
+          <div className="catalog-status muted" role="status">
+            <p>{error || "Catalogue local affiché — la synchronisation Chariow sera réessayée au prochain chargement."}</p>
+            <button className="btn glass" type="button" onClick={() => setRetryKey((value) => value + 1)}>
+              Réessayer
+            </button>
+          </div>
         )}
 
         <div className="courses-grid">

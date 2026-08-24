@@ -59,6 +59,7 @@ function PageEffects() {
 export function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const isNewsletterPage = location.pathname === "/newsletter";
+  const isArticlePage = location.pathname.startsWith("/blog/");
 
   return (
     <>
@@ -70,7 +71,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <Breadcrumbs />
         {children}
       </main>
-      {!isNewsletterPage && <NewsletterBlock sourcePage={location.pathname.replace(/\//g, "_") || "home"} />}
+      {!isNewsletterPage && !isArticlePage && <NewsletterBlock sourcePage={location.pathname.replace(/\//g, "_") || "home"} />}
       <Footer />
     </>
   );

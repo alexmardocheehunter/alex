@@ -10,6 +10,7 @@ export default function NewsletterBlock({ sourcePage = "global", compact = false
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -17,6 +18,7 @@ export default function NewsletterBlock({ sourcePage = "global", compact = false
     const cleanFirst = firstName.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) return;
 
+    setErrorMessage("");
     setStatus("sending");
     try {
       await subscribeToNewsletter({
@@ -28,7 +30,9 @@ export default function NewsletterBlock({ sourcePage = "global", compact = false
       setEmail("");
       setFirstName("");
     } catch (err) {
-      console.error("Erreur enregistrement newsletter:", err);
+      const message = err instanceof Error ? err.message : "Inscription impossible pour le moment.";
+      console.error("Erreur enregistrement newsletter:", message);
+      setErrorMessage(message);
       setStatus("error");
     }
   };
@@ -40,8 +44,8 @@ export default function NewsletterBlock({ sourcePage = "global", compact = false
           <span className="nb-eyebrow">
             <i>✦</i> Chaque vendredi matin · 08:00 GMT
           </span>
-          <h3 className="nb-title">
-            Recevez les clés de l'automatisation <span>sans jargon</span>.
+            <h3 className="nb-title">
+            Chaque vendredi, je t'envoie des astuces IA et mes outils gratuits par email.
           </h3>
           <p className="nb-sub">
             Un conseil concret, un outil testé ou un cas réel d'entreprise ivoirienne.
@@ -54,6 +58,7 @@ export default function NewsletterBlock({ sourcePage = "global", compact = false
             <div className="nb-inputs">
               <input
                 type="text"
+                name="firstName"
                 placeholder="Votre prénom"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
@@ -62,6 +67,7 @@ export default function NewsletterBlock({ sourcePage = "global", compact = false
               />
               <input
                 type="email"
+                name="email"
                 required
                 placeholder="vous@entreprise.ci"
                 value={email}
@@ -86,7 +92,7 @@ export default function NewsletterBlock({ sourcePage = "global", compact = false
           )}
           {status === "error" && (
             <p className="nb-feedback error" role="status">
-              Une erreur est survenue lors de l'enregistrement. Veuillez réessayer.
+              {errorMessage || "Une erreur est survenue lors de l'enregistrement. Veuillez réessayer."}
             </p>
           )}
         </div>
