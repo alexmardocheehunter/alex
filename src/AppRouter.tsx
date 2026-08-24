@@ -1,14 +1,19 @@
 import { useEffect, type ReactNode } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { StaticRouter } from "react-router-dom/server";
 import HomePage from "./App";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import NewsletterBlock from "./components/NewsletterBlock";
+import Breadcrumbs from "./components/Breadcrumbs";
+import Analytics from "./components/Analytics";
+import { Seo } from "./seo";
 import AboutPage from "./pages/AboutPage";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import BlogListPage from "./pages/BlogListPage";
 import FormationsPage from "./pages/FormationsPage";
 import NewsletterPage from "./pages/NewsletterPage";
+import { ContactPage, MethodPage, ServicesPage, StoriesPage } from "./pages/BusinessPages";
 
 function PageEffects() {
   const location = useLocation();
@@ -51,35 +56,64 @@ function PageEffects() {
   return null;
 }
 
-function Layout({ children }: { children: ReactNode }) {
+export function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const isNewsletterPage = location.pathname === "/newsletter";
 
   return (
     <>
       <PageEffects />
+      <Seo />
+      <Analytics />
       <Header />
-      <main>{children}</main>
+      <main>
+        <Breadcrumbs />
+        {children}
+      </main>
       {!isNewsletterPage && <NewsletterBlock sourcePage={location.pathname.replace(/\//g, "_") || "home"} />}
       <Footer />
     </>
   );
 }
 
-export default function AppRouter() {
+export function AppRoutes() {
   return (
-    <BrowserRouter>
-      <Layout>
-        <Routes>
+    <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/histoires" element={<StoriesPage />} />
+          <Route path="/methode" element={<MethodPage />} />
+          <Route path="/services" element={<ServicesPage />} />
           <Route path="/a-propos" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/blog" element={<BlogListPage />} />
           <Route path="/blog/:slug" element={<BlogDetailPage />} />
           <Route path="/formations" element={<FormationsPage />} />
           <Route path="/newsletter" element={<NewsletterPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Layout>
+    </Routes>
+  );
+}
+
+export function AppContent() {
+  return (
+    <Layout>
+      <AppRoutes />
+    </Layout>
+  );
+}
+
+export default function AppRouter() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
+  );
+}
+
+export function StaticApp({ location }: { location: string }) {
+  return (
+    <StaticRouter location={location}>
+      <AppContent />
+    </StaticRouter>
   );
 }

@@ -72,11 +72,10 @@ export default function AboutPage() {
               <span className="tick t3" aria-hidden="true" />
               <span className="tick t4" aria-hidden="true" />
               <div className="pf-inner">
-                <img
-                  src="/photo-alex.png"
-                  alt="Yao Alex Mardochée KOFFI"
-                  loading="lazy"
-                />
+                <picture>
+                  <source srcSet="/photo-alex.webp" type="image/webp" />
+                  <img src="/photo-alex.png" alt="Yao Alex Mardochée KOFFI" width="1122" height="1402" loading="lazy" />
+                </picture>
               </div>
               <figcaption className="pf-meta">
                 <span className="pf-name">

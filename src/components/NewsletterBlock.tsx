@@ -50,7 +50,7 @@ export default function NewsletterBlock({ sourcePage = "global", compact = false
         </div>
 
         <div className="nb-form-wrap">
-          <form className="nb-form" onSubmit={handleSubmit}>
+          <form className="nb-form" onSubmit={handleSubmit} data-track-form="newsletter">
             <div className="nb-inputs">
               <input
                 type="text"

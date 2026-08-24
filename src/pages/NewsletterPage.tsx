@@ -52,7 +52,7 @@ export default function NewsletterPage() {
               <p>Zéro spam. Pas de théorie vide. Juste du concret.</p>
             </div>
 
-            <form className="nl-page-form" onSubmit={handleSubmit}>
+            <form className="nl-page-form" onSubmit={handleSubmit} data-track-form="newsletter">
               <div className="field">
                 <span>Prénom</span>
                 <input

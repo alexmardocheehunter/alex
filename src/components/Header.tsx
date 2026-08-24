@@ -25,12 +25,12 @@ export default function Header() {
 
   const navigation = (
     <>
-      <Link to="/#preuves">Histoires</Link>
-      <Link to="/#services">Services</Link>
+      <Link to="/histoires" className={location.pathname === "/histoires" ? "active" : ""}>Histoires</Link>
+      <Link to="/services" className={location.pathname === "/services" ? "active" : ""}>Services</Link>
       <Link to="/formations" className={location.pathname === "/formations" ? "active" : ""}>Formations</Link>
       <Link to="/blog" className={location.pathname.startsWith("/blog") ? "active" : ""}>Blog</Link>
       <Link to="/a-propos" className={location.pathname === "/a-propos" ? "active" : ""}>À propos</Link>
-      <Link to="/#contact">Contact</Link>
+      <Link to="/contact" className={location.pathname === "/contact" ? "active" : ""}>Contact</Link>
     </>
   );
 
@@ -48,7 +48,7 @@ export default function Header() {
           <Link className="nav-newsletter-btn" to="/newsletter">
             <span className="sparkle">✦</span> Newsletter
           </Link>
-          <a className="cta" href="/#contact">
+          <a className="cta" href="/contact" data-cta="header_contact">
             Discutons
           </a>
           <button

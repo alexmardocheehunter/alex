@@ -4,7 +4,10 @@ export interface BlogArticle {
   category: string;
   readTime: string;
   date: string;
+  datePublished: string;
+  dateModified?: string;
   excerpt: string;
+  answer: string;
   content: string;
   author: string;
   tags: string[];
@@ -28,12 +31,16 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     category: "Automatisation & IA",
     readTime: "6 min",
     date: "20 Février 2026",
+    datePublished: "2026-02-20",
+    dateModified: "2026-02-20",
     author: "Alex Mardochée",
     tags: ["IA", "Agents", "WhatsApp", "PME"],
     excerpt:
       "Fini les simples chatbots qui répètent un script. Les agents IA autonomes savent désormais lire vos stocks, qualifier un prospect et envoyer un récapitulatif comptable sans intervention.",
+    answer:
+      "En 2026, une PME ivoirienne peut gagner jusqu'à 15 heures par semaine en reliant un agent IA à WhatsApp, son stock et ses outils de pilotage.",
     content: `
-### Le passage du chatbot passif à l'agent IA autonome
+### Comment passer d'un chatbot passif à un agent IA autonome ?
 
 Pendant longtemps, quand une entreprise à Abidjan installait un "bot" sur WhatsApp ou Facebook, il s'agissait simplement d'un arbre de décision rigide : *« Tapez 1 pour le service client, tapez 2 pour nos tarifs »*. Résultat ? Les clients étaient frustrés et les gérants finissaient par reprendre le téléphone manuellement.
 
@@ -45,7 +52,7 @@ En 2026, l'IA a franchi un cap majeur avec l'avènement des **agents autonomes (
 
 ---
 
-### Un cas concret : 3 boutiques de mode entre Cocody et Marcory
+### Combien d'heures une automatisation peut-elle faire gagner à 3 boutiques ?
 
 Prenons l'exemple d'Adjoua, gérante d'un réseau de prêt-à-porter :
 - **Avant l'agent IA** : 3 vendeuses passaient 2 heures chaque soir à compter les ventes sur des calepins WhatsApp, entraînant des ruptures de stock fréquentes et des erreurs de caisse.
@@ -72,12 +79,16 @@ L'erreur classique est de vouloir tout automatiser d'un coup avec des logiciels 
     category: "Comptabilité & SYSCOHADA",
     readTime: "8 min",
     date: "14 Février 2026",
+    datePublished: "2026-02-14",
+    dateModified: "2026-02-14",
     author: "Alex Mardochée",
     tags: ["SYSCOHADA", "Comptabilité", "Factures", "Automatisation"],
     excerpt:
       "La saisie manuelle des factures et la préparation des clôtures mensuelles coûtent des journées entières aux cabinets et entreprises. Voici le circuit exact pour automatiser 80% des écritures.",
+    answer:
+      "Une automatisation SYSCOHADA bien contrôlée peut préparer jusqu'à 80 % des écritures répétitives à partir des factures, avec validation finale par le comptable.",
     content: `
-### Le fardeau de la saisie manuelle en Afrique de l'Ouest
+### Pourquoi la saisie manuelle coûte-t-elle autant aux PME d'Afrique de l'Ouest ?
 
 Dans l'espace OHADA, le plan comptable SYSCOHADA révisé exige une rigueur documentaire exemplaire. Pourtant, dans la grande majorité des cabinets comptables et des PME à Abidjan, la réalité opérationnelle est la suivante :
 
@@ -87,7 +98,7 @@ Dans l'espace OHADA, le plan comptable SYSCOHADA révisé exige une rigueur docu
 
 ---
 
-### La chaîne d'automatisation intelligente
+### Comment construire une chaîne d'automatisation SYSCOHADA fiable ?
 
 Grâce à la vision par ordinateur et aux modèles IA spécialisés, il est désormais possible de transformer une facture PDF ou photo en une écriture comptable pré-remplie et conforme au SYSCOHADA :
 
@@ -101,14 +112,14 @@ Grâce à la vision par ordinateur et aux modèles IA spécialisés, il est dés
 [ Préparation Écriture ] → Validation humaine en 1 clic → Export logiciel comptable
 \`\`\`
 
-#### Les 3 avantages immédiats :
+#### Quels sont les 3 avantages immédiats ?
 1. **Élimination des erreurs de saisie** : le modèle vérifie que l'équilibre Débit = Crédit est respecté à 100%.
 2. **Gain de temps de clôture** : la clôture mensuelle passe de 6 jours à moins de 48 heures.
 3. **Valorisation du rôle comptable** : les équipes ne sont plus des saisisseurs de données, mais de véritables analystes financiers au service du chef d'entreprise.
 
 ---
 
-### Règle d'or : L'humain garde toujours la validation finale
+### Pourquoi l'humain doit-il garder la validation finale ?
 
 Automatiser ne signifie pas laisser la machine déclarer seule. Le système génère un tableau de revue où le responsable comptable valide les lignes d'un simple coup d'œil. La machine prépare 80% du travail répétitif, l'expert comptable apporte la certification et le conseil.
     `,
@@ -119,12 +130,16 @@ Automatiser ne signifie pas laisser la machine déclarer seule. Le système gén
     category: "Retours d'expérience",
     readTime: "7 min",
     date: "05 Février 2026",
+    datePublished: "2026-02-05",
+    dateModified: "2026-02-05",
     author: "Alex Mardochée",
     tags: ["Koraline", "WhatsApp", "Immobilier", "Cas Réel"],
     excerpt:
       "Comment nous avons conçu Koraline pour une agence immobilière à Angré : gestion des disponibilités, envoi de fiches de biens et doublement des visites qualifiées.",
+    answer:
+      "L'agent WhatsApp Koraline a réduit le temps de réponse à 3 secondes et multiplié par 2,2 les visites qualifiées d'une agence à Angré en 6 semaines.",
     content: `
-### Le problème de départ de l'agence immobilière
+### Quel problème l'agence immobilière devait-elle résoudre ?
 
 Une agence immobilière basée à Angré recevait entre 30 et 50 messages WhatsApp par jour. La majorité posait les mêmes questions :
 - *« Le studio est toujours disponible ? »*
@@ -135,7 +150,7 @@ L'agent immobilier passait ses journées au téléphone à répéter les mêmes 
 
 ---
 
-### La solution : L'agent Koraline
+### Comment l'agent Koraline répond-il en 3 secondes ?
 
 Nous avons conçu et déployé **Koraline**, une assistante virtuelle WhatsApp spécialement entraînée pour l'immobilier ivoirien :
 
@@ -152,7 +167,7 @@ Voici les photos du premier bien. Souhaitez-vous une visite demain à 11h ou 16h
 
 ---
 
-### Le bilan après 6 semaines
+### Quels résultats observer après 6 semaines ?
 - **Temps de réponse moyen** : 3 secondes (auparavant 4 heures en moyenne).
 - **Nombre de visites programmées** : Multiplié par 2,2.
 - **Taux de satisfaction client** : 98% des prospects ont apprécié la rapidité sans même réaliser immédiatement qu'ils échangeaient avec une IA.
@@ -164,18 +179,22 @@ Voici les photos du premier bien. Souhaitez-vous une visite demain à 11h ou 16h
     category: "Fiscalité ivoirienne",
     readTime: "9 min",
     date: "28 Janvier 2026",
+    datePublished: "2026-01-28",
+    dateModified: "2026-01-28",
     author: "Alex Mardochée",
     tags: ["Fiscalité", "DGI", "TVA", "Impôts", "Abidjan"],
     excerpt:
       "Retards de déclaration, déductibilité de la TVA, retenues à la source : tour d'horizon des erreurs les plus fréquentes des PME ivoiriennes et comment les prévenir.",
+    answer:
+      "Les PME à Abidjan réduisent leur risque fiscal en automatisant les rappels à J-5, le contrôle des factures et le suivi continu des ventes et encaissements.",
     content: `
-### La rigueur fiscale, condition de survie des PME à Abidjan
+### Pourquoi la rigueur fiscale est-elle vitale pour une PME à Abidjan ?
 
 En Côte d'Ivoire, les contrôles de la Direction Générale des Impôts (DGI) et les pénalités de retard peuvent rapidement asphyxier la trésorerie d'une jeune entreprise ou d'une PME en croissance. Ayant fait mes premiers pas en stage au sein même de l'administration fiscale à 19 ans, j'ai vu de l'intérieur les erreurs récurrentes commises par les dirigeants.
 
 ---
 
-### Les 4 pièges fiscaux les plus coûteux
+### Quels sont les 4 pièges fiscaux les plus coûteux ?
 
 #### 1. Le non-respect de l'échéance du 15 du mois
 Toutes les déclarations mensuelles (TVA, ITS, FDFP, etc.) doivent être impérativement déposées et payées avant le 15 de chaque mois. Un seul jour de retard entraîne des majorations automatiques de 10% à 25% qui s'accumulent.
@@ -191,7 +210,7 @@ Lors d'un contrôle fiscal, les inspecteurs comparent systématiquement vos acha
 
 ---
 
-### Comment se prémunir grâce aux flux automatisés ?
+### Comment se prémunir grâce à des flux automatisés ?
 
 1. **Mettre en place des alertes automatiques à J-5 (le 10 du mois)** pour récapituler tous les montants à déclarer.
 2. **Scanner et valider l'authenticité des factures fournisseurs dès réception** grâce à un contrôle automatique.

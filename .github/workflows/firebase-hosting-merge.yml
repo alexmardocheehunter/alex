@@ -27,6 +27,14 @@ jobs:
       - name: Install Functions dependencies
         run: npm ci --prefix functions
 
+      - name: Configure analytics
+        env:
+          VITE_GA_MEASUREMENT_ID: '${{ secrets.VITE_GA_MEASUREMENT_ID }}'
+        run: |
+          if [ -n "$VITE_GA_MEASUREMENT_ID" ]; then
+            printf 'VITE_GA_MEASUREMENT_ID=%s\n' "$VITE_GA_MEASUREMENT_ID" > .env.production
+          fi
+
       - name: Typecheck
         run: npm run typecheck
 

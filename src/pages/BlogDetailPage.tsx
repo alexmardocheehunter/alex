@@ -2,6 +2,7 @@ import { useParams, Link, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { BLOG_ARTICLES } from "../data/blogArticles";
 import NewsletterBlock from "../components/NewsletterBlock";
+import { getArticleFaqs } from "../seo";
 
 export default function BlogDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -15,9 +16,15 @@ export default function BlogDetailPage() {
     return <Navigate to="/blog" replace />;
   }
 
-  const relatedArticles = BLOG_ARTICLES.filter(
-    (a) => a.slug !== article.slug && a.category === article.category
-  ).slice(0, 2);
+  const relatedArticles = BLOG_ARTICLES
+    .filter((a) => a.slug !== article.slug)
+    .map((candidate) => ({
+      candidate,
+      score: (candidate.category === article.category ? 3 : 0) + candidate.tags.filter((tag) => article.tags.includes(tag)).length,
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(({ candidate }) => candidate);
 
   // Rendu simple du markdown en blocs HTML structurés
   const renderContent = (rawText: string) => {
@@ -65,16 +72,16 @@ export default function BlogDetailPage() {
       if (line.startsWith("### ")) {
         flushList(index);
         elements.push(
-          <h3 key={index} className="article-h3">
+          <h2 key={index} className="article-h2">
             {line.replace("### ", "")}
-          </h3>
+          </h2>
         );
       } else if (line.startsWith("#### ")) {
         flushList(index);
         elements.push(
-          <h4 key={index} className="article-h4">
+          <h3 key={index} className="article-h3">
             {line.replace("#### ", "")}
-          </h4>
+          </h3>
         );
       } else if (line.startsWith("> ")) {
         flushList(index);
@@ -100,20 +107,17 @@ export default function BlogDetailPage() {
     });
 
     flushList(lines.length);
+    elements.splice(2, 0, (
+      <aside className="article-inline-cta" key="inline-cta">
+        <strong>Vous voulez appliquer ce principe à Abidjan ?</strong>
+        <a href="https://wa.me/2250710073519?text=Bonjour%20Alex%2C%20je%20viens%20de%20lire%20un%20article%20et%20je%20veux%20parler%20de%20mon%20processus." target="_blank" rel="noreferrer" data-cta="article_inline_whatsapp">Décrire mon processus sur WhatsApp →</a>
+      </aside>
+    ));
     return elements;
   };
 
   return (
-    <div className="article-detail-page">
-      {/* Fil d'ariane */}
-      <nav className="breadcrumbs" aria-label="Fil d'ariane">
-        <Link to="/">Accueil</Link>
-        <span>/</span>
-        <Link to="/blog">Blog</Link>
-        <span>/</span>
-        <span className="current">{article.category}</span>
-      </nav>
-
+    <article className="article-detail-page">
       {/* En-tête de l'article */}
       <header className="article-header">
         <div className="article-meta-badges">
@@ -122,18 +126,19 @@ export default function BlogDetailPage() {
           <span className="badge-date">{article.date}</span>
         </div>
         <h1 className="article-title">{article.title}</h1>
-        <p className="article-lead">{article.excerpt}</p>
+        <p className="article-lead">{article.answer}</p>
         <div className="article-author-row">
           <div className="author-monogram">A</div>
           <div>
-            <span className="author-name">Écrit par <b>{article.author}</b></span>
+            <span className="author-name">Écrit par <Link to="/a-propos"><b>{article.author}</b></Link></span>
             <span className="author-role">Responsable Transformation Digitale · Abidjan</span>
+            <span className="author-role"><time dateTime={article.datePublished}>Publié le {article.date}</time>{article.dateModified && article.dateModified !== article.datePublished && ` · Mis à jour le ${article.dateModified}`}</span>
           </div>
         </div>
       </header>
 
       {/* Contenu principal */}
-      <main className="article-body-wrapper">
+      <section className="article-body-wrapper" aria-label="Contenu de l'article">
         <div className="article-body">{renderContent(article.content)}</div>
 
         {/* Tags */}
@@ -144,7 +149,27 @@ export default function BlogDetailPage() {
             </span>
           ))}
         </div>
-      </main>
+      </section>
+
+      <nav className="article-context-links" aria-label="Prochaines étapes">
+        <Link to="/services">Voir les services d'automatisation</Link>
+        <Link to="/contact">Demander un audit à Abidjan</Link>
+        <Link to="/blog">Lire les autres articles</Link>
+      </nav>
+
+      <section className="article-faq" aria-labelledby="article-faq-title">
+        <h2 id="article-faq-title">Questions fréquentes sur ce sujet</h2>
+        {getArticleFaqs(article).map((faq) => (
+          <details key={faq.question}>
+            <summary>{faq.question}</summary>
+            <p>{faq.answer}</p>
+          </details>
+        ))}
+      </section>
+
+      <p className="article-final-cta">
+        <a className="btn primary" href="https://wa.me/2250710073519?text=Bonjour%20Alex%2C%20je%20souhaite%20un%20audit%20automatisation%20%C3%A0%20Abidjan." target="_blank" rel="noreferrer" data-cta="article_final_whatsapp">Parler de mon projet sur WhatsApp</a>
+      </p>
 
       {/* CTA Newsletter fin d'article */}
       <div className="article-newsletter-cta">
@@ -179,6 +204,6 @@ export default function BlogDetailPage() {
           </div>
         </section>
       )}
-    </div>
+    </article>
   );
 }

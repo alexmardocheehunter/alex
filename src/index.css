@@ -2551,3 +2551,215 @@ main {
   .footer-bottom { display: block; }
   .footer-sign { display: block; margin-top: 10px; }
 }
+/* SEO/GEO content blocks */
+.site-breadcrumbs {
+  max-width: 1180px;
+  margin: 96px auto 0;
+  padding: 0 28px;
+  font-size: .78rem;
+}
+
+.landing-page {
+  min-height: 60vh;
+}
+
+.landing-hero {
+  max-width: 820px;
+  padding: 72px 0 52px;
+}
+
+.landing-hero h1 {
+  max-width: 820px;
+  margin: 16px 0;
+  font-size: clamp(2.2rem, 5vw, 4.8rem);
+  line-height: 1.02;
+}
+
+.landing-hero p {
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.landing-grid,
+.service-cards,
+.contact-landing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.landing-card {
+  padding: 28px;
+  border: 1px solid rgba(228, 217, 190, .18);
+  background: rgba(255, 255, 255, .035);
+  border-radius: 12px;
+}
+
+.landing-card h2 {
+  margin: 8px 0 12px;
+  color: var(--beige);
+}
+
+.landing-card p,
+.landing-card span {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.landing-cta,
+.article-final-cta {
+  margin: 36px 0 0;
+}
+
+.method-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  padding: 0;
+  list-style-position: inside;
+}
+
+.method-steps li {
+  padding: 24px;
+  border-left: 2px solid var(--beige);
+  background: rgba(255, 255, 255, .035);
+}
+
+.method-steps strong,
+.method-steps span {
+  display: block;
+}
+
+.method-steps span {
+  margin-top: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.landing-table-wrap {
+  margin-top: 28px;
+  overflow-x: auto;
+}
+
+.landing-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.landing-table caption {
+  margin-bottom: 12px;
+  text-align: left;
+  color: var(--beige);
+  font-weight: 700;
+}
+
+.landing-table th,
+.landing-table td {
+  padding: 14px;
+  border: 1px solid rgba(228, 217, 190, .18);
+}
+
+.landing-table th {
+  color: var(--beige);
+}
+
+.contact-landing-grid {
+  align-items: start;
+}
+
+.contact-form label {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+  color: var(--beige);
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid rgba(228, 217, 190, .25);
+  border-radius: 6px;
+  background: #111;
+  color: #fff;
+  font: inherit;
+}
+
+.faq-list,
+.article-faq {
+  max-width: 900px;
+}
+
+.faq-item,
+.article-faq details {
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(228, 217, 190, .2);
+}
+
+.faq-item summary,
+.article-faq summary {
+  cursor: pointer;
+  color: var(--beige);
+  font-weight: 700;
+}
+
+.faq-item p,
+.article-faq p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.article-h2 {
+  margin-top: 2.5rem;
+}
+
+.article-inline-cta {
+  display: grid;
+  gap: 8px;
+  margin: 28px 0;
+  padding: 22px;
+  border-left: 3px solid var(--beige);
+  background: rgba(228, 217, 190, .07);
+}
+
+.article-inline-cta a,
+.article-context-links a {
+  color: var(--beige);
+  font-weight: 700;
+}
+
+.article-context-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 28px;
+}
+
+.article-faq {
+  margin: 48px auto 0;
+  padding: 0 28px;
+}
+
+.article-faq h2 {
+  color: var(--beige);
+}
+
+@media (max-width: 760px) {
+  .landing-grid,
+  .service-cards,
+  .contact-landing-grid,
+  .method-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .site-breadcrumbs {
+    margin-top: 76px;
+    padding: 0 18px;
+  }
+}

@@ -32,7 +32,7 @@ export default function Footer() {
             Comptable de formation &amp; Responsable Transformation Digitale à Abidjan.
             Le pont entre la rigueur du chiffre et la puissance de la machine.
           </p>
-          <a className="f-wa" href={WA_LINK} target="_blank" rel="noreferrer">
+          <a className="f-wa" href={WA_LINK} target="_blank" rel="noreferrer" data-cta="footer_whatsapp">
             WhatsApp direct : <b>{WA_DISPLAY}</b>
           </a>
         </div>
@@ -52,10 +52,10 @@ export default function Footer() {
         <div className="footer-col">
           <h4>Solutions PME</h4>
           <nav aria-label="Liens solutions">
-            <a href="/#services">Ventes &amp; Stock WhatsApp</a>
-            <a href="/#services">Assistants IA 24/7</a>
-            <a href="/#services">Clôture SYSCOHADA</a>
-            <a href="/#services">Audit Flash &amp; Déploiement</a>
+            <Link to="/services">Ventes &amp; Stock WhatsApp</Link>
+            <Link to="/services">Assistants IA 24/7</Link>
+            <Link to="/services">Clôture SYSCOHADA</Link>
+            <Link to="/services">Audit Flash &amp; Déploiement</Link>
           </nav>
         </div>
 
@@ -63,7 +63,7 @@ export default function Footer() {
         <div className="footer-col">
           <h4>Prendre Contact</h4>
           <nav aria-label="Liens contact">
-            <a href="/#contact">Formulaire de contact</a>
+            <Link to="/contact">Formulaire de contact</Link>
             <a href="https://calendly.com/alexmardochee0/30min" target="_blank" rel="noreferrer">
               Réserver un Audit Flash
             </a>

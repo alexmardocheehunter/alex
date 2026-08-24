@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { trackEvent } from "./components/Analytics";
+import { SITE_FAQS } from "./seo";
 
 /* ================================================================
    ALEX MARDOCHÉE — Automatisation & IA pour les entreprises d'Abidjan
@@ -347,6 +349,7 @@ export default function App() {
       return;
     }
     const email = String(data.get("email") ?? "").trim();
+    trackEvent("submit_form", { form_name: "contact" });
     setContactStatus("sending");
     const finish = () => {
       setSentTo(email);
@@ -411,7 +414,7 @@ export default function App() {
               plus.</strong> Du concret, zéro jargon.
             </p>
             <div className="ctas reveal" style={{ ["--d" as string]: ".55s" }}>
-              <a className="btn primary" href={WA_LINK} target="_blank" rel="noreferrer">
+              <a className="btn primary" href={WA_LINK} target="_blank" rel="noreferrer" data-cta="hero_whatsapp">
                 Je veux du concret
               </a>
               <a className="btn glass" href="#preuves">
@@ -670,11 +673,10 @@ export default function App() {
               <span className="tick t3" aria-hidden="true" />
               <span className="tick t4" aria-hidden="true" />
               <div className="pf-inner">
-                <img
-                  src="/photo-alex.png"
-                  alt="Yao Alex Mardochée KOFFI — Responsable de la Transformation Digitale"
-                  loading="lazy"
-                />
+                <picture>
+                  <source srcSet="/photo-alex.webp" type="image/webp" />
+                  <img src="/photo-alex.png" alt="Yao Alex Mardochée KOFFI — Responsable de la Transformation Digitale" width="1122" height="1402" loading="lazy" />
+                </picture>
               </div>
               <figcaption className="pf-meta">
                 <span className="pf-name">
@@ -796,7 +798,7 @@ export default function App() {
                 <span className="chip">Réponse sous 24 h</span>
               </div>
               <p className="wa-num">{WA_DISPLAY}</p>
-              <a className="btn primary" href={WA_LINK} target="_blank" rel="noreferrer">
+              <a className="btn primary" href={WA_LINK} target="_blank" rel="noreferrer" data-cta="contact_whatsapp">
                 Écrire sur WhatsApp <IconArrow />
               </a>
               <p className="wa-note">
@@ -908,6 +910,24 @@ export default function App() {
           </div>
         </div>
 
+      </section>
+
+      <section className="section faq-section" aria-labelledby="faq-title">
+        <div className="sec-head">
+          <div>
+            <span className="eyebrow">Questions fréquentes</span>
+            <h2 className="sec-title" id="faq-title">L'essentiel avant de commencer.</h2>
+          </div>
+          <p className="sec-note">Des réponses directes sur l'automatisation des PME à Abidjan.</p>
+        </div>
+        <div className="faq-list">
+          {SITE_FAQS.map((faq) => (
+            <details key={faq.question} className="faq-item">
+              <summary>{faq.question}</summary>
+              <p>{faq.answer}</p>
+            </details>
+          ))}
+        </div>
       </section>
     </>
   );
