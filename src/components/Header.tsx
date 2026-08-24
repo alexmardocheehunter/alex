@@ -39,7 +39,7 @@ export default function Header() {
       <div className="progress" ref={progressRef} aria-hidden="true" />
       <header className="nav" ref={navRef}>
         <Link className="brand" to="/">
-          ALEX <b>MARDOCHÉE</b>
+          <img className="brand-logo" src="/logo-alex.png?v=1" alt="Logo Alex Mardochée" width="45" height="45" />
         </Link>
         <nav aria-label="Navigation principale">
           {navigation}

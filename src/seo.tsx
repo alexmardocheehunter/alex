@@ -26,12 +26,12 @@ export const SITE_FAQS: FaqItem[] = [
   {
     question: "Que peut-on automatiser dans une PME à Abidjan ?",
     answer:
-      "Les commandes WhatsApp, le stock, les relances, les factures, les rendez-vous, les tableaux de bord et les réponses clients peuvent être automatisés progressivement.",
+      "Les possibilités sont immenses : commandes WhatsApp avec accusé de réception et suivi, saisie comptable et factures via OCR (montant, TVA, date et numéro de pièce), relances clients à J-7, J-3 et J+1, stocks synchronisés, tableaux de bord actualisés et rendez-vous avec confirmations SMS ou email. Tout ce qui est répétitif et chronophage peut être confié à des agents IA, avec validation humaine pour les décisions sensibles.",
   },
   {
     question: "Combien de temps faut-il pour lancer une première automatisation ?",
     answer:
-      "Un premier flux ciblé peut être prototypé en 7 jours, puis mesuré et amélioré avec l'équipe avant d'être étendu à d'autres processus.",
+      "Une automatisation simple, comme le classement des emails ou l'envoi de relances, peut être opérationnelle en 48 à 72 heures. Pour un processus plus complexe avec OCR ou flux comptables, comptez 1 à 2 semaines, incluant l'analyse, le développement, les tests et la mise en production.",
   },
   {
     question: "Travaillez-vous avec les entreprises situées hors d'Abidjan ?",

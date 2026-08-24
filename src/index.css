@@ -85,6 +85,8 @@ img {
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
   font-weight: 900;
   font-size: 0.95rem;
   letter-spacing: 0.14em;
@@ -92,6 +94,15 @@ img {
   text-decoration: none;
   white-space: nowrap;
   transition: color 0.3s ease;
+}
+
+.brand-logo {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border: 1px solid var(--beige-25);
+  border-radius: 8px;
+  background: var(--body-soft);
 }
 
 .brand:hover {
@@ -2574,6 +2585,45 @@ main {
 
 .blog-card {
   min-height: 0;
+}
+
+/* Accueil — présentation courte, la bio complète reste sur /a-propos. */
+.home-about-summary {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(28px, 5vw, 58px);
+  border: 1px solid var(--beige-10);
+  background: var(--card);
+}
+
+.home-about-summary .sec-title {
+  margin-top: 18px;
+}
+
+.home-about-name {
+  margin-top: 28px;
+  color: var(--white);
+  font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+  font-weight: 800;
+}
+
+.home-about-role {
+  margin-top: 8px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.home-about-punchline {
+  max-width: 650px;
+  margin-top: 24px;
+  color: var(--beige);
+  font-size: clamp(1.1rem, 2.3vw, 1.55rem);
+  line-height: 1.45;
+  font-style: italic;
+}
+
+.home-about-summary .btn {
+  margin-top: 28px;
 }
 /* SEO/GEO content blocks */
 .site-breadcrumbs {

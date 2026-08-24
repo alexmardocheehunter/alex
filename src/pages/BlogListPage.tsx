@@ -37,6 +37,9 @@ export default function BlogListPage() {
           {BLOG_CATEGORIES.map((cat) => (
             <button
               key={cat}
+              type="button"
+              aria-pressed={selectedCategory === cat}
+              aria-label={cat === "Tous" ? "Tous les articles" : `Articles : ${cat}`}
               onClick={() => setSelectedCategory(cat)}
               className={`cat-btn ${selectedCategory === cat ? "active" : ""}`}
             >
