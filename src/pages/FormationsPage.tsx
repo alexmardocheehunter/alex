@@ -21,8 +21,12 @@ export default function FormationsPage() {
       .then(async (response) => {
         if (!response.ok) throw new Error("Catalogue indisponible");
         const payload = (await response.json()) as CourseApiResponse;
-        if (payload.courses?.length) setCourses(payload.courses);
-        else setUsingFallback(true);
+        if (payload.courses?.length) {
+          setCourses(payload.courses);
+          setUsingFallback(false);
+        } else {
+          setUsingFallback(true);
+        }
       })
       .catch((error: unknown) => {
         if ((error as Error).name !== "AbortError") {

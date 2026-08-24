@@ -36,8 +36,14 @@ exports.subscribeNewsletter = onRequest(
       return jsonError(response, 400, "Veuillez fournir une adresse email valide.");
     }
 
+    const listId = Number(process.env.BREVO_LIST_ID);
+    const apiKey = brevoApiKey.value();
+    if (!apiKey || !Number.isInteger(listId) || listId <= 0) {
+      return jsonError(response, 503, "La newsletter est temporairement indisponible.");
+    }
+
     const firestore = getFirestore();
-    let leadRef;
+    let leadRef = firestore.collection("newsletter").doc();
     try {
       const duplicate = await firestore
         .collection("newsletter")
@@ -46,31 +52,21 @@ exports.subscribeNewsletter = onRequest(
         .get();
 
       if (!duplicate.empty) {
-        return response.status(409).json({
-          success: false,
-          message: "Cet email est déjà inscrit.",
-        });
+        const existingLead = duplicate.docs[0];
+        const existingStatus = existingLead.get("brevoStatus");
+        if (["synced", "already_subscribed"].includes(existingStatus)) {
+          return response.status(409).json({
+            success: false,
+            message: "Cet email est déjà inscrit.",
+          });
+        }
+        leadRef = existingLead.ref;
       }
-
-      leadRef = await firestore.collection("newsletter").add({
-        firstName: firstName || "Abonné",
-        email,
-        source: sourcePage,
-        createdAt: FieldValue.serverTimestamp(),
-        brevoStatus: "pending",
-      });
     } catch (error) {
       console.error("Newsletter lead storage failed", {
         error: error instanceof Error ? error.message : "unknown_error",
       });
       return jsonError(response, 500, "Impossible d'enregistrer votre inscription pour le moment.");
-    }
-
-    const listId = Number(process.env.BREVO_LIST_ID);
-    const apiKey = brevoApiKey.value();
-    if (!apiKey || !Number.isInteger(listId) || listId <= 0) {
-      await leadRef.update({ brevoStatus: "not_configured" });
-      return jsonError(response, 503, "La newsletter est temporairement indisponible.");
     }
 
     try {
@@ -92,7 +88,13 @@ exports.subscribeNewsletter = onRequest(
       const brevoBody = await brevoResponse.text();
       if (!brevoResponse.ok) {
         if (brevoResponse.status === 400 && /duplicate|already/i.test(brevoBody)) {
-          await leadRef.update({ brevoStatus: "already_subscribed" });
+          await leadRef.set({
+            firstName: firstName || "Abonné",
+            email,
+            source: sourcePage,
+            createdAt: FieldValue.serverTimestamp(),
+            brevoStatus: "already_subscribed",
+          }, { merge: true });
           return response.status(409).json({
             success: false,
             message: "Cet email est déjà inscrit.",
@@ -105,14 +107,27 @@ exports.subscribeNewsletter = onRequest(
         throw new Error(`Brevo returned ${brevoResponse.status}`);
       }
 
-      await leadRef.update({ brevoStatus: "synced", syncedAt: FieldValue.serverTimestamp() });
+      await leadRef.set({
+        firstName: firstName || "Abonné",
+        email,
+        source: sourcePage,
+        createdAt: FieldValue.serverTimestamp(),
+        brevoStatus: "synced",
+        syncedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
       return response.status(201).json({
         success: true,
         message: "Inscription confirmée ! Vérifie ta boîte mail.",
       });
     } catch (error) {
       console.error("Brevo synchronization failed", error);
-      await leadRef.update({ brevoStatus: "error" });
+      await leadRef.set({
+        firstName: firstName || "Abonné",
+        email,
+        source: sourcePage,
+        createdAt: FieldValue.serverTimestamp(),
+        brevoStatus: "error",
+      }, { merge: true });
       return jsonError(response, 502, "La synchronisation de votre inscription a échoué.");
     }
   }
