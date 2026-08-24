@@ -1,0 +1,54 @@
+name: Deploy to Firebase on push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install Functions dependencies
+        run: npm ci --prefix functions
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ALEXMARDOCHEE }}'
+
+      - name: Configure Functions environment
+        env:
+          BREVO_LIST_ID: '${{ secrets.BREVO_LIST_ID }}'
+        run: |
+          if [ -z "$BREVO_LIST_ID" ]; then
+            echo "Missing required GitHub secret: BREVO_LIST_ID"
+            exit 1
+          fi
+          printf 'BREVO_LIST_ID=%s\n' "$BREVO_LIST_ID" > functions/.env
+
+      - name: Deploy Hosting and Functions
+        env:
+          FUNCTIONS_DISCOVERY_TIMEOUT: 60000
+        run: npx --yes firebase-tools@latest deploy --only hosting,functions --project alexmardochee

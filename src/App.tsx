@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "./firebase";
 
 /* ================================================================
    ALEX MARDOCHÉE — Automatisation & IA pour les entreprises d'Abidjan
@@ -20,8 +18,8 @@ const CALENDLY_EMBED =
   /* Thème officiel Calendly — aligné sur la palette du site */
   "&background_color=0a0a0a&text_color=f5f3ef&primary_color=e4d9be";
 
-/* À brancher plus tard : Firebase Cloud Function → SendGrid/SMTP → alexmardochee0@gmail.com */
-const FORM_ENDPOINT = "";
+/* Endpoint serveur optionnel pour le contact ; mailto utilisé en local. */
+const FORM_ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT ?? "";
 
 const reducedMotion = () =>
   typeof window !== "undefined" &&
@@ -44,22 +42,6 @@ function useParticles() {
       }),
     []
   );
-}
-
-function useAbidjanClock() {
-  const [time, setTime] = useState("--:--");
-  useEffect(() => {
-    const fmt = () =>
-      new Intl.DateTimeFormat("fr-FR", {
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZone: "Africa/Abidjan",
-      }).format(new Date());
-    setTime(fmt());
-    const id = window.setInterval(() => setTime(fmt()), 1000);
-    return () => window.clearInterval(id);
-  }, []);
-  return time;
 }
 
 /* ------------------------- Icônes (SVG inline) ------------------------- */
@@ -219,24 +201,24 @@ const FLOW = [
     icon: <IconChat />,
     title: "Client sur WhatsApp",
     desc: "Il écrit, comme d'habitude.",
-    chip: "3 s",
+    chip: "3 s chrono",
   },
   {
     icon: <IconBolt />,
-    title: "Agent IA",
-    desc: "Comprend, répond, envoie les infos.",
-    chip: "GPT-4o / Claude",
+    title: "Agent IA & Traitement",
+    desc: "Comprend, répond et envoie les infos précises.",
+    chip: "IA Métier",
   },
   {
     icon: <IconDb />,
     title: "Stock · Caisse · Sheets",
-    desc: "Tout se met à jour en temps réel.",
-    chip: "Make / n8n",
+    desc: "Tout se met à jour en temps réel et sans erreur.",
+    chip: "Synchro auto",
   },
   {
     icon: <IconBell />,
-    title: "Rapport 20 h",
-    desc: "Le récap du jour sur ton téléphone.",
+    title: "Rapport de clôture",
+    desc: "Le récap du jour directement sur votre téléphone.",
     chip: "Chaque soir",
   },
 ];
@@ -251,37 +233,37 @@ const CHECKS = [
 const SERVICES = [
   {
     num: "01",
-    title: "Automatisation de processus métier",
-    desc: "Commandes, stock, relances, reporting, flux WhatsApp : votre quotidien tourne sans vous. Vous gardez le contrôle, la machine fait le répétitif.",
+    title: "Automatisation Ventes & Stock WhatsApp",
+    desc: "Commandes, catalogue, mise à jour des stocks et alertes ruptures. Vos clients commandent en 30 secondes, votre caisse est synchronisée sans saisie.",
     tags: ["Commandes", "Stock", "Relances"],
-    hot: null as string | null,
+    hot: "Très demandé",
   },
   {
     num: "02",
-    title: "Agents IA personnalisés",
-    desc: "Réponse client 24 h/24, qualification de leads, assistants internes : un employé digital formé à votre business, avec vos prix et vos procédures.",
-    tags: ["24/7", "Leads", "Interne"],
+    title: "Employé Digital & Support Client 24/7",
+    desc: "Réponse instantanée jour et nuit, qualification de prospects, prise de rendez-vous automatique : un assistant IA formé à vos prix et vos règles.",
+    tags: ["24/7", "WhatsApp", "Qualification"],
     hot: null,
   },
   {
     num: "03",
-    title: "Tableaux de bord & reporting automatique",
-    desc: "Ventes, stock, présences, performance : vos chiffres prêts chaque matin, mis à jour sans intervention. Les décisions deviennent simples.",
-    tags: ["Temps réel", "KPI"],
+    title: "Tableaux de bord & Suivi des Ventes",
+    desc: "Chiffre d'affaires, marges, stocks critiques et présences. Recevez un rapport limpide chaque matin et soir sans ouvrir un seul fichier Excel complexe.",
+    tags: ["Temps réel", "Rapports", "KPIs"],
     hot: null,
   },
   {
     num: "04",
-    title: "Digitalisation comptable & RH",
-    desc: "Préparation d'écritures, paie, déclarations, suivi RH. Conçu main dans la main avec l'écosystème FLOW — Legal Flow, Suite Flow, RH FLOW.",
-    tags: ["SYSCOHADA", "Paie"],
+    title: "Digitalisation Comptable & RH SYSCOHADA",
+    desc: "Lecture automatique des factures PDF, préparation des écritures, gestion des présences et pointage terrain. Conçu avec l'écosystème FLOW.",
+    tags: ["SYSCOHADA", "Factures", "RH"],
     hot: "Écosystème FLOW",
   },
   {
     num: "05",
-    title: "Audit & mise en place sur-mesure",
-    desc: "Analyse de vos process actuels → proposition concrète → déploiement. Vous savez exactement ce que vous gagnez, avant de dépenser.",
-    tags: ["Audit", "Roadmap", "Déploiement"],
+    title: "Audit Flash & Déploiement Sur-Mesure",
+    desc: "Diagnostic de vos blocages quotidiens → plan d'automatisation rentable sous 7 jours → mise en place clé en main avec formation de votre équipe.",
+    tags: ["Diagnostic", "Accompagnement"],
     hot: null,
   },
 ];
@@ -289,33 +271,16 @@ const SERVICES = [
 /* ================================================================ */
 
 export default function App() {
-  const navRef = useRef<HTMLElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const particles = useParticles();
-  const clock = useAbidjanClock();
 
-  const [contactStatus, setContactStatus] = useState<"idle" | "sending" | "ok">("idle");
+  const [contactStatus, setContactStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [sentTo, setSentTo] = useState("");
-  const [newsStatus, setNewsStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
 
-  /* Révélation hero + nav + barre de progression */
+  /* Révélation de la page */
   useEffect(() => {
     document.body.classList.add("loaded");
-    const onScroll = () => {
-      navRef.current?.classList.toggle("scrolled", window.scrollY > 30);
-      const doc = document.documentElement;
-      const max = doc.scrollHeight - window.innerHeight;
-      if (progressRef.current) {
-        progressRef.current.style.width = `${max > 0 ? (window.scrollY / max) * 100 : 0}%`;
-      }
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      document.body.classList.remove("loaded");
-    };
+    return () => document.body.classList.remove("loaded");
   }, []);
 
   /* Reveal au scroll — les blocs apparaissent un par un */
@@ -371,7 +336,7 @@ export default function App() {
     };
   }, []);
 
-  /* Formulaire de contact — front prêt ; brancher FORM_ENDPOINT (Cloud Function) en prod */
+  /* Formulaire de contact — endpoint serveur en production, mailto en local */
   const onContactSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -394,55 +359,23 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(Object.fromEntries(data.entries())),
       })
-        .then(finish)
-        .catch(finish);
+        .then((response) => {
+          if (!response.ok) throw new Error("Contact endpoint failed");
+          finish();
+        })
+        .catch(() => setContactStatus("error"));
     } else {
-      window.setTimeout(finish, 900);
-    }
-  };
-
-  /* Astuces gratuites — enregistrement dans Firestore (collection "newsletter") */
-  const onNewsSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const email = String(new FormData(form).get("email") ?? "").trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
-    setNewsStatus("sending");
-    try {
-      await addDoc(collection(db, "newsletter"), {
-        email,
-        createdAt: serverTimestamp(),
-        source: "newsletter_form"
-      });
-      setNewsStatus("ok");
-      form.reset();
-    } catch (err) {
-      console.error("Erreur lors de l'enregistrement de l'email newsletter:", err);
-      setNewsStatus("error");
+      const subject = encodeURIComponent("Projet d'automatisation PME");
+      const body = encodeURIComponent(
+        `Nom : ${data.get("nom") ?? ""}\nEmail : ${email}\nTâche : ${data.get("tache") ?? ""}\n\n${data.get("message") ?? ""}`
+      );
+      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+      finish();
     }
   };
 
   return (
     <>
-      <div className="progress" ref={progressRef} aria-hidden="true" />
-
-      {/* ------------------------------ NAV ------------------------------ */}
-      <header className="nav" ref={navRef}>
-        <a className="brand" href="#top">
-          ALEX <b>MARDOCHÉE</b>
-        </a>
-        <nav aria-label="Navigation principale">
-          <a href="#preuves">Histoires</a>
-          <a href="#methode">Méthode</a>
-          <a href="#services">Services</a>
-          <a href="#a-propos">À propos</a>
-          <a href="#contact">Contact</a>
-        </nav>
-        <a className="cta" href="#contact">
-          Discutons
-        </a>
-      </header>
-
       {/* ------------------------------ HERO ------------------------------ */}
       <section className="hero" id="top" ref={heroRef}>
         <div className="depth" data-depth="-16" data-rotate="2.2" aria-hidden="true">
@@ -518,31 +451,38 @@ export default function App() {
         </div>
 
         <div className="stories">
-          {STORIES.map((s, i) => (
-            <article
-              className={`story rv ${s.featured ? "featured" : ""}`}
-              key={s.name}
-              style={{ ["--d" as string]: `${Math.min(i * 0.06, 0.45)}s` }}
-            >
-              <div className="story-top">
-                <span className="monogram" aria-hidden="true">
-                  {s.name.replace("Dr. ", "").charAt(0)}
-                </span>
-                <div>
-                  <h3>{s.name}</h3>
-                  <p>
-                    {s.role} · {s.place}
-                  </p>
+          {STORIES.map((s, i) => {
+            const isHighlight = i === 2; // Yedo -90%
+            const isQuoteLarge = i === 4; // Bakary 24/7
+            return (
+              <article
+                className={`story rv ${s.featured ? "featured" : ""} ${isHighlight ? "highlight" : ""} ${isQuoteLarge ? "quote-large" : ""}`}
+                key={s.name}
+                style={{ ["--d" as string]: `${Math.min(i * 0.06, 0.45)}s` }}
+              >
+                <div className="story-top">
+                  <span className="monogram" aria-hidden="true">
+                    {s.name.replace("Dr. ", "").charAt(0)}
+                  </span>
+                  <div>
+                    <h3>{s.name}</h3>
+                    <p>
+                      {s.role} · {s.place}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <blockquote>{s.quote}</blockquote>
-              <div className="story-metric">
-                <span className="num">{s.num}</span>
-                <span className="lbl">{s.lbl}</span>
-              </div>
-            </article>
-          ))}
+                <blockquote>{s.quote}</blockquote>
+                <div className="story-metric">
+                  <span className="num">{s.num}</span>
+                  <span className="lbl">{s.lbl}</span>
+                </div>
+              </article>
+            );
+          })}
         </div>
+        <p className="stories-disclaimer rv">
+          Cas d'usage réels et scénarios d'automatisation déployés pour des PME à Abidjan.
+        </p>
       </section>
 
       {/* ------------------------------ MARQUEE ------------------------------ */}
@@ -572,59 +512,41 @@ export default function App() {
           </div>
           <p className="sec-note">
             Voici un workflow réel — du message du client au récap du soir — et
-            les interfaces qui le pilotent. Tout est visible, tout est à vous.
+            l'interface qui le pilote. Tout est visible, tout est à vous.
           </p>
         </div>
 
-        <div className="method-intro">
-          {/* Workflow n8n / Make */}
-          <div className="win rv" style={{ ["--d" as string]: ".08s" }}>
-            <div className="win-bar">
-              <i /><i /><i />
-              <span className="win-title">workflow.json — n8n / Make</span>
-              <span className="win-chip">En production</span>
-            </div>
-            <div className="flow-canvas">
-              <div className="flow-nodes">
-                {FLOW.map((f) => (
-                  <div className="flow-node" key={f.title}>
-                    <span className="dot">{f.icon}</span>
-                    <div>
-                      <h4>{f.title}</h4>
-                      <p>{f.desc}</p>
-                    </div>
-                    <span className="chip-mini">{f.chip}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <p className="flow-caption">
-              <b>Extrait réel</b> — le flux qui gère commandes et stock d'un
-              dépôt à Abobo. Il tourne depuis 4 mois, sans intervention.
-            </p>
+        {/* Workflow plein largeur */}
+        <div className="win flow-full rv" style={{ ["--d" as string]: ".08s" }}>
+          <div className="win-bar">
+            <i /><i /><i />
+            <span className="win-title">Votre processus métier — Automatisé</span>
+            <span className="win-chip">En production</span>
           </div>
-
-          {/* Ce que ça fait */}
-          <div className="win checks-card rv" style={{ ["--d" as string]: ".16s" }}>
-            <h3>Concrètement, ça fait quoi ?</h3>
-            <ul className="checks">
-              {CHECKS.map((c, i) => (
-                <li key={i}>
-                  <IconCheck />
-                  <span>{c}</span>
-                </li>
+          <div className="flow-canvas">
+            <div className="flow-nodes">
+              {FLOW.map((f) => (
+                <div className="flow-node" key={f.title}>
+                  <span className="dot">{f.icon}</span>
+                  <div>
+                    <h4>{f.title}</h4>
+                    <p>{f.desc}</p>
+                  </div>
+                  <span className="chip-mini">{f.chip}</span>
+                </div>
               ))}
-            </ul>
-            <p className="checks-foot">
-              Chaque brique est <b>visible et modifiable</b>. Rien n'est caché
-              dans une boîte noire — vous gardez la main sur tout.
-            </p>
+            </div>
+          </div>
+          <div className="flow-caption">
+            <span><b>Extrait réel</b> — le flux qui gère commandes et stock d'un dépôt à Abobo. Il tourne depuis 4 mois, sans intervention.</span>
+            <span className="flow-tech">Make / n8n · GPT-4o / Claude</span>
           </div>
         </div>
 
-        {/* Interfaces OpenAI & Anthropic */}
-        <div className="ui-mocks">
-          <div className="win rv" style={{ ["--d" as string]: ".1s" }}>
+        {/* Grille côte à côte : Playground OpenAI & Ce que ça fait */}
+        <div className="method-details">
+          {/* Playground — OpenAI */}
+          <div className="win rv" style={{ ["--d" as string]: ".12s" }}>
             <div className="win-bar">
               <i /><i /><i />
               <span className="win-title">Playground — OpenAI</span>
@@ -656,31 +578,27 @@ export default function App() {
             </div>
           </div>
 
-          <div className="win rv" style={{ ["--d" as string]: ".18s" }}>
+          {/* Ce que ça fait concrètement */}
+          <div className="win checks-card rv" style={{ ["--d" as string]: ".18s" }}>
             <div className="win-bar">
               <i /><i /><i />
-              <span className="win-title">Console — Anthropic</span>
-              <span className="win-chip">Agent compta</span>
+              <span className="win-title">Bénéfices directs</span>
+              <span className="win-chip">Sans boîte noire</span>
             </div>
-            <div className="mock-body">
-              <span className="mock-label">Outils connectés</span>
-              <ul className="tools-list">
-                <li>lire_facture(pdf) → lignes normalisées</li>
-                <li>classer_ecriture() → plan SYSCOHADA</li>
-                <li>generer_etat() → liasse mensuelle</li>
+            <div className="checks-content">
+              <h3>Concrètement, ça fait quoi ?</h3>
+              <ul className="checks">
+                {CHECKS.map((c, i) => (
+                  <li key={i}>
+                    <IconCheck />
+                    <span>{c}</span>
+                  </li>
+                ))}
               </ul>
-              <span className="mock-label">Sortie structurée</span>
-              <pre className="code">{`{
-  "facture": "F-2026-0148",
-  "montant": 1250000, `}<span className="k">{`"devise": "XOF"`}</span>{`,
-  "compte": "604 — Achats", `}<span className="c">{`// validé auto`}</span>{`
-  "etat": "prêt pour revue"
-}`}</pre>
-              <div className="mock-foot">
-                <span>Modèle — <b>Claude</b></span>
-                <span>Outils — <b>× 3</b></span>
-                <span><b>98 %</b> auto-validé</span>
-              </div>
+              <p className="checks-foot">
+                Chaque brique est <b>visible et modifiable</b>. Rien n'est caché
+                dans une boîte noire — vous gardez la main sur tout.
+              </p>
             </div>
           </div>
         </div>
@@ -831,6 +749,17 @@ export default function App() {
               Même depuis l'Afrique, on peut construire des systèmes aussi
               efficaces que ceux de l'Occident !
             </blockquote>
+
+            <div className="about-stats rv" style={{ ["--d" as string]: ".48s", marginTop: "24px", display: "flex", gap: "20px", flexWrap: "wrap" }}>
+              <div style={{ borderLeft: "2px solid var(--beige)", paddingLeft: "12px" }}>
+                <span style={{ display: "block", fontSize: "1.2rem", fontWeight: "800", color: "var(--beige)" }}>100% Local</span>
+                <span style={{ fontSize: "0.75rem", color: "var(--muted)" }}>Présent &amp; disponible à Abidjan</span>
+              </div>
+              <div style={{ borderLeft: "2px solid var(--beige)", paddingLeft: "12px" }}>
+                <span style={{ display: "block", fontSize: "1.2rem", fontWeight: "800", color: "var(--beige)" }}>ROI Direct</span>
+                <span style={{ fontSize: "0.75rem", color: "var(--muted)" }}>Gains mesurés dès la première semaine</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -937,9 +866,14 @@ export default function App() {
                 <p className="form-ok" role="status">
                   <IconCheck />
                   <span>
-                    Message envoyé — je vous réponds sous 24 h
+                    Votre message est prêt — je vous réponds sous 24 h
                     {sentTo ? ` à ${sentTo}` : ""}.
                   </span>
+                </p>
+              )}
+              {contactStatus === "error" && (
+                <p className="news-error" role="alert">
+                  L'envoi a échoué. Vérifiez votre connexion ou écrivez directement à {CONTACT_EMAIL}.
                 </p>
               )}
             </form>
@@ -974,74 +908,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Astuces gratuites */}
-        <div className="news rv" style={{ ["--d" as string]: ".1s" }}>
-          <div>
-            <h4>
-              Recevez des astuces <span>gratuites</span>
-            </h4>
-            <p className="n-sub">
-              Un email par semaine : une automatisation qui marche, un cas réel
-              d'entreprise ivoirienne. Zéro jargon, zéro spam — désabonnement
-              en un clic.
-            </p>
-          </div>
-          <form onSubmit={onNewsSubmit}>
-            <div className="news-row">
-              <input
-                name="email"
-                type="email"
-                required
-                placeholder="vous@email.ci"
-                aria-label="Votre adresse email"
-              />
-              <button
-                className="btn glass"
-                type="submit"
-                disabled={newsStatus === "sending"}
-              >
-                {newsStatus === "sending" ? "Envoi…" : "S'abonner"}
-              </button>
-            </div>
-            {newsStatus === "ok" && (
-              <p className="news-ok" role="status">
-                <IconCheck />
-                <span>C'est noté — première astuce dans votre boîte cette semaine.</span>
-              </p>
-            )}
-            {newsStatus === "error" && (
-              <p className="news-error" role="status" style={{ color: "#ef4444", fontSize: "0.875rem", marginTop: "0.5rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <span>Une erreur est survenue lors de l'inscription. Veuillez réessayer.</span>
-              </p>
-            )}
-          </form>
-        </div>
       </section>
-
-      {/* ------------------------------ FOOTER ------------------------------ */}
-      <footer className="footer">
-        <span className="fb">
-          ALEX <b>MARDOCHÉE</b>
-        </span>
-        <a className="f-wa" href={WA_LINK} target="_blank" rel="noreferrer">
-          Contact direct : {WA_DISPLAY}
-        </a>
-        <span className="fl">
-          <span className="flag" aria-hidden="true">
-            <i className="f1" />
-            <i className="f2" />
-            <i className="f3" />
-          </span>
-          © 2026 — Conçu et construit à Abidjan · <span className="clock">{clock}</span> GMT
-        </span>
-        <nav aria-label="Navigation pied de page">
-          <a href="#preuves">Histoires</a>
-          <a href="#methode">Méthode</a>
-          <a href="#services">Services</a>
-          <a href="#a-propos">À propos</a>
-          <a href="#contact">Contact</a>
-        </nav>
-      </footer>
     </>
   );
 }
