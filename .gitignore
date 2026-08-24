@@ -12,3 +12,4 @@ build/
 *.log
 .firebase/
 .prerender/
+gha-creds-*.json
