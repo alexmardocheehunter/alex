@@ -15,7 +15,8 @@ export function trackEvent(name: string, params: Record<string, unknown> = {}) {
 }
 
 export default function Analytics() {
-  const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
+  const configuredMeasurementId = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
+  const measurementId = configuredMeasurementId?.match(/^G-[A-Z0-9]+$/i)?.[0];
 
   useEffect(() => {
     if (measurementId && !document.querySelector(`script[data-ga="${measurementId}"]`)) {

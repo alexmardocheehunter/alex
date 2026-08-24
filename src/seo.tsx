@@ -5,6 +5,7 @@ export const SITE_URL = "https://alexmardochee.web.app";
 export const SITE_NAME = "Alex Mardochée — Automatisation & IA";
 export const SITE_IMAGE = `${SITE_URL}/photo-alex.png`;
 export const WHATSAPP_URL = "https://wa.me/2250710073519";
+export const GOOGLE_SITE_VERIFICATION = "spuin1TTHd7ZMsOj_p2_JFMZ8kHjBI9qxlq0AJBpML4";
 
 export interface FaqItem {
   question: string;
@@ -261,6 +262,7 @@ export function Seo() {
   useEffect(() => {
     document.title = data.title;
     setMeta("name", "description", data.description);
+    setMeta("name", "google-site-verification", GOOGLE_SITE_VERIFICATION);
     setMeta("name", "robots", "index, follow, max-image-preview:large");
     setMeta("property", "og:type", data.type);
     setMeta("property", "og:title", data.title);
@@ -306,6 +308,7 @@ export function renderSeoHead(pathname: string) {
   const meta = [
     `<title>${escapeHtml(data.title)}</title>`,
     `<meta name="description" content="${escapeHtml(data.description)}">`,
+    `<meta name="google-site-verification" content="${GOOGLE_SITE_VERIFICATION}">`,
     `<link rel="canonical" href="${escapeHtml(data.canonical)}">`,
     `<meta name="robots" content="index, follow, max-image-preview:large">`,
     `<meta property="og:type" content="${data.type}">`,
