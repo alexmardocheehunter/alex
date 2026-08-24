@@ -1,8 +1,35 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { COURSES, type Course } from "../data/courses";
 
 interface CourseApiResponse {
-  courses?: Course[];
+  courses?: unknown[];
+}
+
+function normalizeCourse(value: unknown, index: number): Course | null {
+  if (!value || typeof value !== "object") return null;
+  const raw = value as Partial<Course>;
+  const name = typeof raw.name === "string" ? raw.name.trim() : "";
+  if (!name) return null;
+
+  return {
+    id: String(raw.id || raw.slug || `course-${index}`),
+    slug: String(raw.slug || raw.id || `course-${index}`),
+    name,
+    category: String(raw.category || "Formation"),
+    description: String(raw.description || "Formation pratique orientée résultats."),
+    priceFormatted: String(raw.priceFormatted || "Voir le tarif sur Chariow"),
+    priceAmount: Number(raw.priceAmount || 0),
+    currency: String(raw.currency || "XOF"),
+    isPopular: Boolean(raw.isPopular),
+    lessonsCount: Number(raw.lessonsCount || 0),
+    duration: String(raw.duration || "À votre rythme"),
+    level: String(raw.level || "Tous niveaux"),
+    chariowUrl: typeof raw.chariowUrl === "string" ? raw.chariowUrl : "",
+    benefits: Array.isArray(raw.benefits)
+      ? raw.benefits.filter((benefit): benefit is string => typeof benefit === "string")
+      : [],
+  };
 }
 
 export default function FormationsPage() {
@@ -21,8 +48,11 @@ export default function FormationsPage() {
       .then(async (response) => {
         if (!response.ok) throw new Error("Catalogue indisponible");
         const payload = (await response.json()) as CourseApiResponse;
-        if (payload.courses?.length) {
-          setCourses(payload.courses);
+        const liveCourses = Array.isArray(payload.courses)
+          ? payload.courses.map(normalizeCourse).filter((course): course is Course => course !== null)
+          : [];
+        if (liveCourses.length) {
+          setCourses(liveCourses);
           setUsingFallback(false);
         } else {
           setUsingFallback(true);
@@ -64,10 +94,10 @@ export default function FormationsPage() {
           </p>
         </div>
 
-        {loading && <p className="catalog-status">Actualisation du catalogue…</p>}
+        {loading && <p className="catalog-status" role="status" aria-live="polite">Chargement des formations…</p>}
         {usingFallback && !loading && (
           <div className="catalog-status muted" role="status">
-            <p>{error || "Catalogue local affiché — la synchronisation Chariow sera réessayée au prochain chargement."}</p>
+            <p>{error || "Les liens de vente sont en cours d'actualisation. Demandez le lien actuel d'une formation avant achat."}</p>
             <button className="btn glass" type="button" onClick={() => setRetryKey((value) => value + 1)}>
               Réessayer
             </button>
@@ -95,9 +125,15 @@ export default function FormationsPage() {
                 </ul>
                 <div className="course-footer">
                   <strong>{course.priceFormatted}</strong>
-                  <a className="btn primary" href={course.chariowUrl} target="_blank" rel="noreferrer">
-                    Découvrir <span aria-hidden="true">→</span>
-                  </a>
+                  {course.chariowUrl && !usingFallback ? (
+                    <a className="btn primary" href={course.chariowUrl} target="_blank" rel="noreferrer">
+                      Découvrir <span aria-hidden="true">→</span>
+                    </a>
+                  ) : (
+                    <Link className="btn primary" to="/contact" data-cta="course_link_request">
+                      Demander le lien <span aria-hidden="true">→</span>
+                    </Link>
+                  )}
                 </div>
               </div>
             </article>

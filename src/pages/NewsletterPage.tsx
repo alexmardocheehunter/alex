@@ -11,7 +11,11 @@ export default function NewsletterPage() {
     e.preventDefault();
     const cleanEmail = email.trim();
     const cleanFirst = firstName.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      setErrorMessage("Saisissez une adresse email valide.");
+      setStatus("error");
+      return;
+    }
 
     setErrorMessage("");
     setStatus("sending");

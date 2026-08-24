@@ -35,6 +35,14 @@ export default function Footer() {
           <a className="f-wa" href={WA_LINK} target="_blank" rel="noreferrer" data-cta="footer_whatsapp">
             WhatsApp direct : <b>{WA_DISPLAY}</b>
           </a>
+          <a
+            className="footer-linkedin"
+            href="https://www.linkedin.com/in/alexmardoche/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn : voir mon profil
+          </a>
         </div>
 
         {/* Colonne 2 : Contenu & Savoir */}

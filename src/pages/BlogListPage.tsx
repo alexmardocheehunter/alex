@@ -51,6 +51,10 @@ export default function BlogListPage() {
 
       {/* Grille des articles */}
       <section className="blog-list-section">
+        <p className="blog-results-count" role="status" aria-live="polite">
+          {filteredArticles.length} article{filteredArticles.length === 1 ? "" : "s"} affiché{filteredArticles.length === 1 ? "" : "s"}
+          {selectedCategory !== "Tous" ? ` dans « ${selectedCategory} »` : ""}.
+        </p>
         <div className="blog-grid">
           {filteredArticles.map((art, idx) => (
             <article key={art.slug} className="blog-card rv" style={{ ["--d" as string]: `${idx * 0.08}s` }}>

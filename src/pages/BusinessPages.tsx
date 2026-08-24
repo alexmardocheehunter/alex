@@ -77,7 +77,7 @@ export function ServicesPage() {
       <div className="service-cards">
         {SERVICES.map(([number, title, description]) => <article className="landing-card" key={number}><span className="eyebrow">{number}</span><h2>{title}</h2><p>{description}</p></article>)}
       </div>
-      <p className="landing-cta"><Link className="btn primary" to="/contact" data-cta="services_contact">Obtenir un audit offert de 15 minutes</Link></p>
+      <p className="landing-cta"><Link className="btn primary" to="/contact" data-cta="services_contact">Obtenir un audit offert de 30 minutes</Link></p>
     </div>
   );
 }

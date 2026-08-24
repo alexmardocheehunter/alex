@@ -27,17 +27,22 @@ export const SITE_FAQS: FaqItem[] = [
   {
     question: "Que peut-on automatiser dans une PME à Abidjan ?",
     answer:
-      "Les possibilités sont immenses : commandes WhatsApp avec accusé de réception et suivi, saisie comptable et factures via OCR (montant, TVA, date et numéro de pièce), relances clients à J-7, J-3 et J+1, stocks synchronisés, tableaux de bord actualisés et rendez-vous avec confirmations SMS ou email. Tout ce qui est répétitif et chronophage peut être confié à des agents IA, avec validation humaine pour les décisions sensibles.",
+      "On peut automatiser les commandes WhatsApp, les réponses clients, la lecture OCR des factures (fournisseur, date, HT, TVA et TTC), les relances à J-7/J-3/J+1, les alertes de stock, les tableaux de bord et les rendez-vous. Le flux prépare les tâches répétitives, journalise chaque action et laisse une validation humaine pour les décisions sensibles.",
   },
   {
     question: "Combien de temps faut-il pour lancer une première automatisation ?",
     answer:
-      "Une automatisation simple, comme le classement des emails ou l'envoi de relances, peut être opérationnelle en 48 à 72 heures. Pour un processus plus complexe avec OCR ou flux comptables, comptez 1 à 2 semaines, incluant l'analyse, le développement, les tests et la mise en production.",
+      "Un flux simple, comme une relance ou un classement d'emails, peut être prototypé en 48 à 72 heures. Un circuit avec OCR, règles métier et export comptable demande généralement 1 à 2 semaines : cadrage, prototype, tests sur des documents réels, validation de l'équipe puis mise en production.",
   },
   {
     question: "Travaillez-vous avec les entreprises situées hors d'Abidjan ?",
     answer:
       "Oui. L'accompagnement est basé à Abidjan et peut être réalisé à distance partout en Côte d'Ivoire et en Afrique francophone.",
+  },
+  {
+    question: "L'OCR peut-il remplacer le contrôle d'un comptable ?",
+    answer:
+      "Non. L'OCR extrait les données d'une facture et l'IA peut proposer le compte, la TVA et le rapprochement, mais un responsable valide les exceptions avant l'export. Cette étape évite de transformer une erreur de lecture ou de paramétrage en écriture comptable définitive.",
   },
 ];
 
@@ -196,7 +201,7 @@ export function getSeoForPath(pathname: string): SeoData {
     },
     "/contact": {
       title: "Contact — Audit automatisation PME offert à Abidjan | Alex Mardochée",
-      description: "Réservez un audit automatisation de 15 minutes à Abidjan sur WhatsApp. Identifions le processus qui vous fait perdre le plus de temps.",
+      description: "Réservez un audit automatisation offert de 30 minutes à Abidjan sur WhatsApp. Identifions le processus qui vous fait perdre le plus de temps.",
       label: "Contact",
     },
     "/blog": {

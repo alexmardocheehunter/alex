@@ -11,7 +11,7 @@ export interface Course {
   lessonsCount: number;
   duration: string;
   level: string;
-  chariowUrl: string;
+  chariowUrl?: string;
   benefits: string[];
 }
 
@@ -30,7 +30,7 @@ export const COURSES: Course[] = [
     lessonsCount: 14,
     duration: "6 heures de vidéo + templates",
     level: "Tous niveaux",
-    chariowUrl: "https://chariow.com/alexmardochee/maitriser-ia-automatisation-business",
+    chariowUrl: "",
     benefits: [
       "Création de votre premier agent WhatsApp pas à pas",
       "Connexion Google Sheets, CRM et outils de caisse",
@@ -51,7 +51,7 @@ export const COURSES: Course[] = [
     lessonsCount: 18,
     duration: "8 heures d'ateliers pratiques",
     level: "Intermédiaire à Avancé",
-    chariowUrl: "https://chariow.com/alexmardochee/excel-expert-finance-syscohada",
+    chariowUrl: "",
     benefits: [
       "Modèles de clôture mensuelle pré-paramétrés",
       "Automatisation des rapprochements bancaires",
@@ -72,7 +72,7 @@ export const COURSES: Course[] = [
     lessonsCount: 12,
     duration: "5 heures intensives",
     level: "Débutant & Intermédiaire",
-    chariowUrl: "https://chariow.com/alexmardochee/agents-whatsapp-business-intelligence",
+    chariowUrl: "",
     benefits: [
       "Configuration de l'API Cloud WhatsApp officielle",
       "Prompt engineering adapté au langage commercial local",

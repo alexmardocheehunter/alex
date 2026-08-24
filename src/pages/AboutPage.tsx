@@ -93,8 +93,16 @@ export default function AboutPage() {
             <div className="about-cta-card">
               <h3>Un projet d'automatisation ?</h3>
               <p>Échangeons directement en 30 minutes sans engagement.</p>
-              <a href="/#contact" className="btn primary">
+              <a href="/contact" className="btn primary">
                 Prendre contact →
+              </a>
+              <a
+                className="btn glass linkedin-link"
+                href="https://www.linkedin.com/in/alexmardoche/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Voir mon profil LinkedIn →
               </a>
             </div>
           </div>

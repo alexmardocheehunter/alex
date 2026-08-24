@@ -11,6 +11,22 @@ const REGION = "europe-west1";
 const BREVO_CONTACTS_URL = "https://api.brevo.com/v3/contacts";
 const CHARIOW_API_URL = process.env.CHARIOW_API_URL || "https://api.chariow.com/v1/products";
 
+function brevoFailure(response) {
+  if (response.status === 401 || response.status === 403) {
+    return { status: 503, message: "Le service newsletter est temporairement indisponible." };
+  }
+  if (response.status === 404) {
+    return { status: 503, message: "La liste newsletter est introuvable. Vérifiez sa configuration." };
+  }
+  if (response.status === 409) {
+    return { status: 409, message: "Cet email est déjà inscrit." };
+  }
+  if (response.status === 400) {
+    return { status: 502, message: "Brevo a refusé l'inscription. Vérifiez l'adresse et la configuration de la liste." };
+  }
+  return { status: 502, message: "Brevo est temporairement indisponible." };
+}
+
 function setCors(response) {
   response.set("Access-Control-Allow-Origin", "*");
   response.set("Access-Control-Allow-Headers", "Content-Type");
@@ -37,7 +53,12 @@ exports.subscribeNewsletter = onRequest(
     }
 
     const listId = Number(process.env.BREVO_LIST_ID);
-    const apiKey = brevoApiKey.value();
+    let apiKey = "";
+    try {
+      apiKey = brevoApiKey.value();
+    } catch (error) {
+      console.error("Brevo secret could not be read", error);
+    }
     if (!apiKey || !Number.isInteger(listId) || listId <= 0) {
       return jsonError(response, 503, "La newsletter est temporairement indisponible.");
     }
@@ -81,30 +102,27 @@ exports.subscribeNewsletter = onRequest(
           email,
           listIds: [listId],
           updateEnabled: true,
+          forceMerge: true,
+          getId: true,
           attributes: { PRENOM: firstName || "Abonné", SOURCE: sourcePage },
         }),
       });
 
       const brevoBody = await brevoResponse.text();
       if (!brevoResponse.ok) {
-        if (brevoResponse.status === 400 && /duplicate|already/i.test(brevoBody)) {
-          await leadRef.set({
-            firstName: firstName || "Abonné",
-            email,
-            source: sourcePage,
-            createdAt: FieldValue.serverTimestamp(),
-            brevoStatus: "already_subscribed",
-          }, { merge: true });
-          return response.status(409).json({
-            success: false,
-            message: "Cet email est déjà inscrit.",
-          });
-        }
+        const failure = brevoFailure(brevoResponse);
         console.error("Brevo returned an error", {
           status: brevoResponse.status,
           body: brevoBody.slice(0, 500),
         });
-        throw new Error(`Brevo returned ${brevoResponse.status}`);
+        await leadRef.set({
+          firstName: firstName || "Abonné",
+          email,
+          source: sourcePage,
+          createdAt: FieldValue.serverTimestamp(),
+          brevoStatus: failure.status === 409 ? "already_subscribed" : "error",
+        }, { merge: true });
+        return jsonError(response, failure.status, failure.message);
       }
 
       await leadRef.set({
@@ -154,7 +172,7 @@ function normalizeCourse(product) {
     lessonsCount: Number(product.lessons_count || product.lessonsCount || 0),
     duration: product.duration || "À votre rythme",
     level: product.level || "Tous niveaux",
-    chariowUrl: product.url || product.checkout_url || `https://chariow.com/${product.slug || product.id}`,
+    chariowUrl: product.url || product.checkout_url || "",
     imageUrl: pictures.cover || pictures.thumbnail || "",
     benefits,
   };
@@ -167,7 +185,12 @@ exports.listCourses = onRequest(
     if (request.method === "OPTIONS") return response.status(204).send("");
     if (request.method !== "GET") return jsonError(response, 405, "Méthode non autorisée.");
 
-    const apiKey = chariowApiKey.value();
+    let apiKey = "";
+    try {
+      apiKey = chariowApiKey.value();
+    } catch (error) {
+      console.error("Chariow secret could not be read", error);
+    }
     if (!apiKey) return response.status(200).json({ courses: [] });
 
     try {

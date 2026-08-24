@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { StaticRouter } from "react-router-dom/server";
+import { StaticRouter } from "react-router";
 import HomePage from "./App";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
