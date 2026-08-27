@@ -438,7 +438,7 @@ export default function App() {
       </section>
 
       {/* ------------------------------ MINI-HISTOIRES ------------------------------ */}
-      <section className="section section-light" id="preuves">
+      <section className="section" id="preuves">
         <div className="sec-head rv">
           <div>
             <span className="eyebrow">01 — Ils l'ont fait</span>
@@ -489,7 +489,7 @@ export default function App() {
       </section>
 
       {/* ------------------------------ MARQUEE ------------------------------ */}
-      <div className="marquee marquee-light" aria-hidden="true">
+      <div className="marquee" aria-hidden="true">
         <div className="marquee-track">
           {[0, 1].map((dup) => (
             <div key={dup} style={{ display: "contents" }}>
@@ -608,7 +608,7 @@ export default function App() {
       </section>
 
       {/* ------------------------------ SERVICES ------------------------------ */}
-      <section className="section section-light" id="services">
+      <section className="section" id="services">
         <div className="sec-head rv">
           <div>
             <span className="eyebrow">03 — Services</span>
@@ -664,7 +664,7 @@ export default function App() {
       </section>
 
       {/* ------------------------------ CONVERSION ------------------------------ */}
-      <section className="section section-light contact" id="contact">
+      <section className="section contact" id="contact">
         <div className="rv">
           <span className="eyebrow">05 — On y va ?</span>
         </div>
@@ -809,7 +809,7 @@ export default function App() {
 
       </section>
 
-      <section className="section section-light faq-section" aria-labelledby="faq-title">
+      <section className="section faq-section" aria-labelledby="faq-title">
         <div className="sec-head">
           <div>
             <span className="eyebrow">Questions fréquentes</span>
