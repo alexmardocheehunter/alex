@@ -25,12 +25,11 @@ export default function Header() {
 
   const navigation = (
     <>
-      <Link to="/histoires" className={location.pathname === "/histoires" ? "active" : ""}>Histoires</Link>
+      <Link to="/" className={location.pathname === "/" ? "active" : ""}>Accueil</Link>
       <Link to="/services" className={location.pathname === "/services" ? "active" : ""}>Services</Link>
       <Link to="/formations" className={location.pathname === "/formations" ? "active" : ""}>Formations</Link>
       <Link to="/blog" className={location.pathname.startsWith("/blog") ? "active" : ""}>Blog</Link>
       <Link to="/a-propos" className={location.pathname === "/a-propos" ? "active" : ""}>À propos</Link>
-      <Link to="/contact" className={location.pathname === "/contact" ? "active" : ""}>Contact</Link>
     </>
   );
 
@@ -39,7 +38,8 @@ export default function Header() {
       <div className="progress" ref={progressRef} aria-hidden="true" />
       <header className="nav" ref={navRef}>
         <Link className="brand" to="/">
-          <img className="brand-logo" src="/logo-alex.png?v=1" alt="Logo Alex Mardochée" width="45" height="45" />
+          <img className="brand-logo" src="/logoalex.png?v=1" alt="Logo Alex Mardochée" width="45" height="45" />
+          <span className="brand-name">ALEX MARDOCHÉE</span>
         </Link>
         <nav aria-label="Navigation principale">
           {navigation}
@@ -63,8 +63,8 @@ export default function Header() {
               <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
             </svg>
           </button>
-          <Link className="nav-pill-btn" to="/newsletter">
-            Newsletter →
+          <Link className="nav-pill-btn" to="/contact" data-cta="header_rendezvous">
+            Rendez-vous
           </Link>
           <button
             className="nav-menu-toggle"

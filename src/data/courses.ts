@@ -5,79 +5,95 @@ export interface Course {
   category: string;
   description: string;
   priceFormatted: string;
+  originalPriceFormatted?: string;
+  discountLabel?: string;
   priceAmount: number;
   currency: string;
   isPopular?: boolean;
   lessonsCount: number;
+  lessonsLabel: string;
   duration: string;
   level: string;
   chariowUrl?: string;
+  cover: string;
   benefits: string[];
 }
 
 export const COURSES: Course[] = [
   {
-    id: "course_ia_pme",
-    slug: "maitriser-ia-automatisation-business",
-    name: "L'IA & l'Automatisation au service des PME",
-    category: "Automatisation & IA",
+    id: "excel-ia-finance-data-mastery",
+    slug: "excel-ia-finance-data-mastery",
+    name: "EXCEL & IA : The Finance Data Mastery",
+    category: "Excel & IA",
     description:
-      "La formation complète pour concevoir, déployer et piloter des flux d'automatisation (n8n, Make, OpenAI) sans coder, adaptés aux réalités du marché ivoirien.",
-    priceFormatted: "35 000 FCFA",
-    priceAmount: 35000,
+      "Une formation pratique pour exploiter Excel et l'IA dans vos analyses financières, vos reportings et vos décisions quotidiennes.",
+    priceFormatted: "5 999 F CFA",
+    originalPriceFormatted: "20 000 F CFA",
+    discountLabel: "70% OFF",
+    priceAmount: 5999,
     currency: "XOF",
     isPopular: true,
-    lessonsCount: 14,
-    duration: "6 heures de vidéo + templates",
+    lessonsCount: 20,
+    lessonsLabel: "20 leçons",
+    duration: "3 modules · 100% pratique",
     level: "Tous niveaux",
-    chariowUrl: "",
+    chariowUrl: "https://alexmardoche.mychariow.shop/excelandia",
+    cover: "/EXCEL & IA  The Finance Data Mastery.webp",
     benefits: [
-      "Création de votre premier agent WhatsApp pas à pas",
-      "Connexion Google Sheets, CRM et outils de caisse",
-      "Templates de workflows n8n & Make prêts à l'emploi",
-      "Accès au groupe privé d'entraide & sessions mensuelles",
+      "+10 fichiers Excel d'exercice",
+      "1 guide Claude AI",
+      "Des ressources IA gratuites",
+      "Accès à vie à la formation",
     ],
   },
   {
-    id: "course_excel_expert",
-    slug: "excel-expert-finance-syscohada",
-    name: "Excel Expert & Automatisation Financière SYSCOHADA",
-    category: "Comptabilité & Finance",
+    id: "reponses-incroyables-gpt",
+    slug: "reponses-incroyables-gpt",
+    name: "OBTENEZ DES REPONSES INCROYABLES DE GPT",
+    category: "Prompts & ChatGPT",
     description:
-      "Passez au niveau supérieur sur Excel (TOSA Expert 95/100) : tableaux de bord dynamiques, formules matricielles, Power Query et clôtures SYSCOHADA sans friction.",
-    priceFormatted: "25 000 FCFA",
-    priceAmount: 25000,
+      "Un guide complet pour obtenir des réponses plus précises avec GPT et exploiter une bibliothèque de prompts prêts à l'emploi.",
+    priceFormatted: "2 500 F CFA",
+    originalPriceFormatted: "4 500 F CFA",
+    discountLabel: "44% OFF",
+    priceAmount: 2500,
     currency: "XOF",
-    lessonsCount: 18,
-    duration: "8 heures d'ateliers pratiques",
-    level: "Intermédiaire à Avancé",
-    chariowUrl: "",
+    lessonsCount: 100,
+    lessonsLabel: "+100 modèles de prompts",
+    duration: "Modèles de prompts prêts à l'emploi",
+    level: "Débutant · Intermédiaire",
+    chariowUrl: "https://alexmardoche.mychariow.shop/prd_idub54",
+    cover: "/OBTENEZ DES REPONSES INCROYABLES DE GPT.avif",
     benefits: [
-      "Modèles de clôture mensuelle pré-paramétrés",
-      "Automatisation des rapprochements bancaires",
-      "Création de tableaux de bord financiers automatisés",
-      "Techniques de validation et d'audit des formules",
+      "+100 modèles de prompts",
+      "Guide complet des prompts ChatGPT",
+      "Accès instantané",
+      "Exemples prêts à copier",
     ],
   },
   {
-    id: "course_whatsapp_agents",
-    slug: "agents-whatsapp-business-intelligence",
-    name: "Construire des Agents WhatsApp IA pour son Entreprise",
-    category: "Agents IA",
+    id: "pack-money-reset",
+    slug: "pack-money-reset",
+    name: "PACK MONEY RESET ( EBOOK, Ficher Excel + Guide )",
+    category: "Ebook & outils",
     description:
-      "Guide pratique pour brancher l'IA sur le numéro WhatsApp de votre business : qualification de leads, gestion du catalogue, relances et support 24/7.",
-    priceFormatted: "45 000 FCFA",
-    priceAmount: 45000,
+      "Le pack pratique pour reprendre le contrôle de votre argent avec un ebook, un fichier Excel et un guide d'utilisation.",
+    priceFormatted: "2 850 F CFA",
+    originalPriceFormatted: "8 850 F CFA",
+    discountLabel: "68% OFF",
+    priceAmount: 2850,
     currency: "XOF",
-    lessonsCount: 12,
-    duration: "5 heures intensives",
-    level: "Débutant & Intermédiaire",
+    lessonsCount: 0,
+    lessonsLabel: "Pack de ressources pratiques",
+    duration: "Ebook de 50 pages + outils",
+    level: "Débutant · Intermédiaire",
     chariowUrl: "",
+    cover: "/PACK MONEY RESET ( EBOOK, Ficher Excel + Guide ).avif",
     benefits: [
-      "Configuration de l'API Cloud WhatsApp officielle",
-      "Prompt engineering adapté au langage commercial local",
-      "Gestion des stocks et alertes en direct",
-      "Système de notification en cas de reprise en main humaine",
+      "Ebook de 50 pages",
+      "1 fichier Excel",
+      "Guide d'utilisation du fichier",
+      "Accès instantané",
     ],
   },
 ];

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { motion } from "framer-motion";
 import { trackEvent } from "./components/Analytics";
 import { SITE_FAQS } from "./seo";
 
@@ -22,6 +23,8 @@ const CALENDLY_EMBED =
 
 /* Endpoint serveur optionnel pour le contact ; mailto utilisé en local. */
 const FORM_ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT ?? "";
+
+const HERO_STAGES = ["golden-hour", "sunset", "night"] as const;
 
 const reducedMotion = () =>
   typeof window !== "undefined" &&
@@ -100,34 +103,41 @@ const STORIES = [
     name: "Adjoua",
     role: "Gérante de bijouterie",
     place: "3 magasins · Cocody, Plateau, Marcory",
+    shortPlace: "Bijouterie, 3 magasins",
+    cat: "commerce" as const,
     quote:
       "Avant, chaque soir, je passais 1 h 30 à compiler les ventes de mes 3 boutiques. Maintenant un agent IA récupère les données, sort le stock critique et m'envoie le récap à 20 h.",
-    num: "+10 h",
-    lbl: "gagnées chaque semaine — et plus aucune rupture de colliers en or",
-    featured: true,
+    num: "+10h",
+    lbl: "gagnées chaque semaine",
   },
   {
     name: "Koffi",
     role: "Agent immobilier",
     place: "Angré",
+    shortPlace: "Agent immobilier",
+    cat: "immobilier" as const,
     quote:
       "Quinze appels par jour pour savoir si un bien était encore dispo. Aujourd'hui un bot WhatsApp répond en 3 secondes, envoie les photos et ne me dérange que pour les vraies visites.",
-    num: "2×",
+    num: "2x",
     lbl: "plus de visites en 6 semaines",
   },
   {
     name: "Yedo",
     role: "Restaurant / traiteur",
     place: "Riviera",
+    shortPlace: "Restaurant, traiteur",
+    cat: "restauration" as const,
     quote:
       "Les commandes WhatsApp arrivaient en désordre, on oubliait des plats, on perdait de l'argent. Maintenant tout est fluide : commande → confirmation → cuisine → livraison, avec alerte stock.",
-    num: "−90 %",
+    num: "-90%",
     lbl: "d'erreurs de commande",
   },
   {
     name: "Aminata",
     role: "Assistante comptable",
     place: "Cocody",
+    shortPlace: "Assistante comptable",
+    cat: "services" as const,
     quote:
       "Chaque fin de mois, c'était la guerre pour sortir les états. Alex a mis en place un flux qui lit les factures, classe tout et prépare déjà 80 % des écritures.",
     num: "−4 j",
@@ -137,6 +147,8 @@ const STORIES = [
     name: "Bakary",
     role: "Directeur d'école primaire",
     place: "Yopougon",
+    shortPlace: "École primaire",
+    cat: "services" as const,
     quote:
       "Les parents appelaient sans arrêt pour les notes, les absences, les frais. Un agent IA répond maintenant 24 h/24 et envoie les rappels de paiement tout seul.",
     num: "24/7",
@@ -146,6 +158,8 @@ const STORIES = [
     name: "Aya",
     role: "Dépôt de boissons / gros",
     place: "Abobo",
+    shortPlace: "Dépôt de boissons",
+    cat: "commerce" as const,
     quote:
       "Le stock n'était jamais clair, les ruptures toujours surprises. Maintenant chaque vente met à jour le stock en temps réel, et l'IA m'alerte 3 jours avant la rupture.",
     num: "0",
@@ -155,6 +169,8 @@ const STORIES = [
     name: "Fatou",
     role: "Salon de beauté",
     place: "Deux-Plateaux",
+    shortPlace: "Salon de beauté",
+    cat: "services" as const,
     quote:
       "Les clientes réservaient puis oubliaient. Aujourd'hui le bot gère les rendez-vous et envoie un rappel 2 h avant. Mon agenda est plein, je ne perds plus de temps au téléphone.",
     num: "0",
@@ -164,6 +180,8 @@ const STORIES = [
     name: "Kouassi",
     role: "Chef de chantier BTP",
     place: "Bingerville",
+    shortPlace: "Chef de chantier",
+    cat: "services" as const,
     quote:
       "Photos, rapports journaliers, demandes de matériel… tout partait dans tous les sens sur WhatsApp. Un workflow centralise tout et me sort un rapport clair chaque soir.",
     num: "1",
@@ -173,6 +191,8 @@ const STORIES = [
     name: "Dr. Yao",
     role: "Cabinet médical",
     place: "Cocody",
+    shortPlace: "Cabinet médical",
+    cat: "services" as const,
     quote:
       "Les patients appelaient sans cesse pour les disponibilités. Un assistant IA gère les rendez-vous et les rappels, et ne me remonte que les urgences.",
     num: "+1 h 30",
@@ -182,12 +202,38 @@ const STORIES = [
     name: "Mariame",
     role: "Société de nettoyage",
     place: "Marcory",
+    shortPlace: "Société de nettoyage",
+    cat: "services" as const,
     quote:
       "28 agents sur le terrain, suivre les présences, les absences, les congés… un cauchemar. Aujourd'hui ils pointent sur WhatsApp, le système calcule et m'alerte.",
     num: "28",
     lbl: "agents suivis — sans courir après personne",
   },
 ];
+
+const STORY_CATEGORIES = [
+  { id: "all", label: "Tous" },
+  { id: "commerce", label: "Commerce" },
+  { id: "immobilier", label: "Immobilier" },
+  { id: "restauration", label: "Restauration" },
+  { id: "services", label: "Services" },
+] as const;
+
+function splitAvantApres(quote: string): { avant: string; apres: string } {
+  const markers = ["Maintenant", "Aujourd'hui", "Aujourd’hui"];
+  for (const m of markers) {
+    const idx = quote.indexOf(m);
+    if (idx > 10) {
+      const avant = quote.slice(0, idx).replace(/^\s*Avant,?\s*—?\s*/i, "").replace(/\s+$/, "");
+      const apres = quote.slice(idx).replace(/\s+$/, "");
+      return { avant: avant.charAt(0).toUpperCase() + avant.slice(1), apres };
+    }
+  }
+  const mid = Math.floor(quote.length / 2);
+  const cut = quote.lastIndexOf(".", mid);
+  const splitAt = cut > 20 ? cut + 1 : mid;
+  return { avant: quote.slice(0, splitAt).trim(), apres: quote.slice(splitAt).trim() };
+}
 
 const MARQUEE = [
   { name: "Adjoua · bijouterie", res: "+10 h/semaine" },
@@ -232,41 +278,47 @@ const CHECKS = [
   <>Vous envoyer un <b>rapport clair</b> chaque soir, sur votre téléphone.</>,
 ];
 
+const FEATURES = [
+  {
+    badge: "Chat IA",
+    title: "Conversations naturelles,\nen temps réel",
+    desc: "Kacy répond comme un membre de votre équipe : commandes, réservations, questions — en français comme en nouchi, 24/7.",
+  },
+  {
+    badge: "Cerveau central",
+    title: "Un seul cerveau,\ntous vos canaux",
+    desc: "Vos clients écrivent là où ils sont déjà. Kacy centralise les messages, les commandes et les paiements.",
+  },
+];
+
 const SERVICES = [
   {
     num: "01",
-    title: "Automatisation Ventes & Stock WhatsApp",
-    desc: "Commandes, catalogue, mise à jour des stocks et alertes ruptures. Vos clients commandent en 30 secondes, votre caisse est synchronisée sans saisie.",
-    tags: ["Commandes", "Stock", "Relances"],
-    hot: "Très demandé",
+    cat: "Automatisation & Gain de Temps",
+    title: "Zéro Tâche Répétitive",
+    desc: "Ne perdez plus des heures à faire les choses à la main. L'IA s'occupe de vos suivis, de vos messages et de vos classements en arrière-plan pendant que vous vous concentrez sur votre cœur de métier.",
+    benefit: "Un gain de temps massif et zéro erreur de saisie.",
   },
   {
     num: "02",
-    title: "Employé Digital & Support Client 24/7",
-    desc: "Réponse instantanée jour et nuit, qualification de prospects, prise de rendez-vous automatique : un assistant IA formé à vos prix et vos règles.",
-    tags: ["24/7", "WhatsApp", "Qualification"],
-    hot: null,
+    cat: "Ventes & Relation Client",
+    title: "Des Ventes Assurées 24h/24",
+    desc: "Ne ratez plus jamais un client. Vos outils répondent instantanément aux messages, conseillent vos visiteurs et enregistrent les demandes, même en dehors de vos horaires de travail.",
+    benefit: "Un taux de vente maximisé et des clients toujours satisfaits.",
   },
   {
     num: "03",
-    title: "Tableaux de bord & Suivi des Ventes",
-    desc: "Chiffre d'affaires, marges, stocks critiques et présences. Recevez un rapport limpide chaque matin et soir sans ouvrir un seul fichier Excel complexe.",
-    tags: ["Temps réel", "Rapports", "KPIs"],
-    hot: null,
+    cat: "Pilotage & Visibilité",
+    title: "Pilotage Clair et Sans Prise de Tête",
+    desc: "Pilotez votre activité avec une vision nette. Fini le pilotage à l'aveugle : l'IA analyse vos chiffres et vos performances pour vous dire clairement ce qui marche et où agir.",
+    benefit: "Des décisions rapides et éclairées, sans jargon incompréhensible.",
   },
   {
     num: "04",
-    title: "Digitalisation Comptable & RH SYSCOHADA",
-    desc: "Lecture automatique des factures PDF, préparation des écritures, gestion des présences et pointage terrain. Conçu avec l'écosystème FLOW.",
-    tags: ["SYSCOHADA", "Factures", "RH"],
-    hot: "Écosystème FLOW",
-  },
-  {
-    num: "05",
-    title: "Audit Flash & Déploiement Sur-Mesure",
-    desc: "Diagnostic de vos blocages quotidiens → plan d'automatisation rentable sous 7 jours → mise en place clé en main avec formation de votre équipe.",
-    tags: ["Diagnostic", "Accompagnement"],
-    hot: null,
+    cat: "Solutions Adaptées",
+    title: "Des Outils Façonnés pour Vous",
+    desc: "Une technologie qui s'adapte à votre réalité. Que vous gériez un commerce, un service ou une entreprise, nous concevons l'outil IA simple et direct qui correspond exactement à votre façon de travailler.",
+    benefit: "Une solution sur mesure qui grandit avec votre activité.",
   },
 ];
 
@@ -278,6 +330,9 @@ export default function App() {
 
   const [contactStatus, setContactStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [sentTo, setSentTo] = useState("");
+  const [heroStage, setHeroStage] = useState({ index: 0, direction: 1 });
+  const [storyFilter, setStoryFilter] = useState<(typeof STORY_CATEGORIES)[number]["id"]>("all");
+  const [expandedStories, setExpandedStories] = useState<Set<string>>(new Set());
 
   /* Révélation de la page */
   useEffect(() => {
@@ -307,16 +362,21 @@ export default function App() {
     return () => io.disconnect();
   }, []);
 
-  /* Parallaxe 3D du hero (lerp 0.055) */
+  /* Parallaxe 3D du hero : mouvement local, lissé et borné dans le hero */
   useEffect(() => {
     if (reducedMotion()) return;
+    const hero = heroRef.current;
     const layers = Array.from(
-      heroRef.current?.querySelectorAll<HTMLElement>(".depth") ?? []
+      hero?.querySelectorAll<HTMLElement>(".image-depth") ?? []
     );
     let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
     const onMove = (e: MouseEvent) => {
-      tx = e.clientX / window.innerWidth - 0.5;
-      ty = e.clientY / window.innerHeight - 0.5;
+      if (!hero) return;
+      const rect = hero.getBoundingClientRect();
+      const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      const y = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+      tx = x - 0.5;
+      ty = y - 0.5;
     };
     const loop = () => {
       cx += (tx - cx) * 0.055;
@@ -336,6 +396,20 @@ export default function App() {
       window.removeEventListener("mousemove", onMove);
       cancelAnimationFrame(raf);
     };
+  }, []);
+
+  /* Cycle jour → nuit → jour : un seul fondu croisé toutes les 3 secondes */
+  useEffect(() => {
+    if (reducedMotion()) return;
+    const lastStage = HERO_STAGES.length - 1;
+    const timer = window.setInterval(() => {
+      setHeroStage((current) => {
+        const direction =
+          current.index === lastStage ? -1 : current.index === 0 ? 1 : current.direction;
+        return { index: current.index + direction, direction };
+      });
+    }, 3000);
+    return () => window.clearInterval(timer);
   }, []);
 
   /* Formulaire de contact — endpoint serveur en production, mailto en local */
@@ -381,13 +455,22 @@ export default function App() {
     <>
       {/* ------------------------------ HERO ------------------------------ */}
       <section className="hero" id="top" ref={heroRef}>
-        <div className="depth" data-depth="-16" data-rotate="2.2" aria-hidden="true">
-          <div className="bg bg-day" />
-          <div className="bg bg-dusk" />
+        <div className="hero-grade" aria-hidden="true" />
+
+        <div className="depth image-depth" data-depth="-26" data-rotate="5.4" aria-hidden="true">
+          {HERO_STAGES.map((stage, index) => (
+            <div
+              key={stage}
+              className={`bg bg-stage bg-${stage}`}
+              style={{
+                opacity: heroStage.index === index ? 1 : 0,
+                zIndex: heroStage.index === index ? 2 : 1,
+              }}
+            />
+          ))}
         </div>
 
-        <div className="depth fx" data-depth="9" aria-hidden="true">
-          <div className="grade" />
+        <div className="depth fx" aria-hidden="true">
           <div className="glow" />
           <div className="sweep" />
           <div className="particles">
@@ -397,7 +480,7 @@ export default function App() {
           </div>
         </div>
 
-        <div className="depth hud" data-depth="16">
+        <div className="depth hud">
           <div className="copy">
             <span className="badge reveal" style={{ ["--d" as string]: ".1s" }}>
               <i />
@@ -441,47 +524,98 @@ export default function App() {
       <section className="section" id="preuves">
         <div className="sec-head rv">
           <div>
-            <span className="eyebrow">01 — Ils l'ont fait</span>
+            <span className="eyebrow">— 01 — ILS L'ONT FAIT</span>
             <h2 className="sec-title">
-              Voici ce que l'automatisation a déjà changé,{" "}
-              <span className="it">pour des gens comme vous.</span>
+              Voici ce que l'automatisation a déjà changé, pour des gens comme vous.
             </h2>
           </div>
           <p className="sec-note">
-            Dix métiers, dix situations ultra-concrètes. Avant / après, avec le
-            résultat en face. Vous allez vous reconnaître.
+            Dix métiers, dix situations ultra-concrètes. Avant / après, avec le résultat en face. Vous allez vous reconnaître.
           </p>
         </div>
 
-        <div className="stories">
-          {STORIES.map((s, i) => {
-            const isHighlight = i === 2; // Yedo -90%
-            const isQuoteLarge = i === 4; // Bakary 24/7
+        {/* Filtres */}
+        <div className="story-filters" role="tablist" aria-label="Filtrer par métier">
+          {STORY_CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              className={`filter-btn ${storyFilter === cat.id ? "active" : ""}`}
+              data-cat={cat.id}
+              aria-pressed={storyFilter === cat.id}
+              onClick={() => setStoryFilter(cat.id)}
+              type="button"
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="tgrid">
+          {(storyFilter === "all" ? STORIES : STORIES.filter((s) => s.cat === storyFilter)).map((s) => {
+            const expanded = expandedStories.has(s.name);
+            const { avant, apres } = splitAvantApres(s.quote);
             return (
-              <article
-                className={`story rv ${s.featured ? "featured" : ""} ${isHighlight ? "highlight" : ""} ${isQuoteLarge ? "quote-large" : ""}`}
+              <div
                 key={s.name}
-                style={{ ["--d" as string]: `${Math.min(i * 0.06, 0.45)}s` }}
+                className={`tcard ${expanded ? "expanded" : ""}`}
+                data-cat={s.cat}
+                role="button"
+                tabIndex={0}
+                aria-expanded={expanded}
+                onClick={() => {
+                  setExpandedStories((prev) => {
+                    const n = new Set(prev);
+                    if (n.has(s.name)) n.delete(s.name);
+                    else n.add(s.name);
+                    return n;
+                  });
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setExpandedStories((prev) => {
+                      const n = new Set(prev);
+                      if (n.has(s.name)) n.delete(s.name);
+                      else n.add(s.name);
+                      return n;
+                    });
+                  }
+                }}
               >
-                <div className="story-top">
-                  <span className="monogram" aria-hidden="true">
+                <div className="tcard-head">
+                  <div className="tcard-avatar" aria-hidden="true">
                     {s.name.replace("Dr. ", "").charAt(0)}
-                  </span>
-                  <div>
-                    <h3>{s.name}</h3>
-                    <p>
-                      {s.role} · {s.place}
-                    </p>
+                  </div>
+                  <div className="tcard-id">
+                    <p className="tcard-name">{s.name}</p>
+                    <p className="tcard-place">{s.shortPlace}</p>
                   </div>
                 </div>
-                <blockquote>{s.quote}</blockquote>
-                <div className="story-metric">
-                  <span className="num">{s.num}</span>
-                  <span className="lbl">{s.lbl}</span>
+                <div className="tcard-stat">{s.num}</div>
+                <div className="tcard-lbl">{s.lbl}</div>
+                <div className="tcard-detail" style={{ display: expanded ? "block" : "none" }}>
+                  <p>
+                    <span className="tcard-aa">Avant —</span> {avant}
+                  </p>
+                  <p>
+                    <span className="tcard-aa">Après —</span> {apres}
+                  </p>
                 </div>
-              </article>
+                <div className="tcard-toggle">
+                  <span className="toggle-label">{expanded ? "réduire" : "avant / après"}</span>
+                  <span className="toggle-icon" style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }} aria-hidden="true">
+                    ⌄
+                  </span>
+                </div>
+              </div>
             );
           })}
+          {storyFilter === "all" && (
+            <div className="ghost-tile" aria-hidden="true">
+              <span className="ghost-plus">+</span>
+              <p>5 autres témoignages</p>
+            </div>
+          )}
         </div>
         <p className="stories-disclaimer rv">
           Cas d'usage réels et scénarios d'automatisation déployés pour des PME à Abidjan.
@@ -503,7 +637,126 @@ export default function App() {
         </div>
       </div>
 
-      {/* ------------------------------ MÉTHODE ------------------------------ */}
+      {/* ------------------------------ FEATURES — L'IA QUI TRAVAILLE ------------------------------ */}
+      <section className="section features-new" id="features">
+        <div className="features-new-head rv">
+          <h2 className="sec-title">L'IA qui travaille vraiment pour vous</h2>
+          <p className="sec-note">Des solutions concrètes pour optimiser chaque aspect de votre entreprise.</p>
+        </div>
+
+        <div className="features-two-col">
+          {/* Bloc gauche — Chat IA */}
+          <article className="feature-big-card rv" style={{ ["--d" as string]: "0.06s" }}>
+            <span className="feature-pill"><i className="fp-icon" aria-hidden="true">⌖</i> {FEATURES[0].badge}</span>
+            <h3 className="feature-big-title">{FEATURES[0].title.split("\n").map((l, i) => <span key={i}>{l}<br /></span>)}</h3>
+            <p className="feature-big-desc">{FEATURES[0].desc}</p>
+            <div className="chat-mock">
+              <div className="chat-bubble client rv" style={{ ["--d" as string]: "0.2s" }}>Une table pour 4 samedi<br />vers 20h ?</div>
+              <div className="chat-line ai-row rv" style={{ ["--d" as string]: "0.35s" }}>
+                <span className="chat-avatar">A</span>
+                <span className="chat-bubble ai">C'est noté !</span>
+              </div>
+              <div className="typing-dots rv" style={{ ["--d" as string]: "0.28s" }} aria-hidden="true"><span /><span /><span /></div>
+            </div>
+          </article>
+
+          {/* Bloc droit — Cerveau central */}
+          <article className="feature-big-card rv" style={{ ["--d" as string]: "0.14s" }}>
+            <span className="feature-pill"><i className="fp-icon" aria-hidden="true">◎</i> {FEATURES[1].badge}</span>
+            <h3 className="feature-big-title">{FEATURES[1].title.split("\n").map((l, i) => <span key={i}>{l}<br /></span>)}</h3>
+            <p className="feature-big-desc">{FEATURES[1].desc}</p>
+            <div className="brain-orbit" aria-hidden="true">
+              <div className="orbit-ring ring-1" />
+              <div className="orbit-ring ring-2" />
+              <div className="orbit-center">A</div>
+              <span className="orbit-icon oi-whatsapp" style={{ ["--i" as string]: "0", ["--start" as string]: "-90deg" }}>
+                <img src="/whatsapp.jpg" alt="" width={24} height={24} />
+              </span>
+              <span className="orbit-icon oi-email" style={{ ["--i" as string]: "1", ["--start" as string]: "-18deg" }}>
+                <img src="/gmail.png" alt="" width={24} height={24} />
+              </span>
+              <span className="orbit-icon oi-telegram" style={{ ["--i" as string]: "2", ["--start" as string]: "54deg" }}>
+                <img src="/telegram.png" alt="" width={24} height={24} />
+              </span>
+              <span className="orbit-icon oi-instagram" style={{ ["--i" as string]: "3", ["--start" as string]: "126deg" }}>
+                <img src="/instagram.jpg" alt="" width={24} height={24} />
+              </span>
+              <span className="orbit-icon oi-messenger" style={{ ["--i" as string]: "4", ["--start" as string]: "198deg" }}>
+                <img src="/facebook ( a utiliser à la place de messanger ).png" alt="" width={24} height={24} />
+              </span>
+            </div>
+          </article>
+        </div>
+
+        {/* Bloc bas — mise en situation d'une orchestration multi-agents */}
+        <article className="feature-orchestra-card rv" style={{ ["--d" as string]: "0.22s" }}>
+          <div className="orchestra-copy">
+            <div>
+              <span className="feature-pill hermes-pill">
+                <img className="hermes-mark" src="/Hermes Agent Logo - Black - zonalogo.com.svg" alt="" width={20} height={20} />
+                Hermes Agent
+              </span>
+              <h3 className="feature-big-title">Trois IA qui travaillent ensemble</h3>
+              <p className="feature-big-desc">Hermes récupère un fichier, lance l'analyse et consulte le web en parallèle avant de vous remettre un brief clair.</p>
+            </div>
+            <span className="orchestra-live"><i /> Processus en cours</span>
+          </div>
+
+          <div className="orchestra-stage" aria-label="Simulation d'un fichier traité par trois agents IA">
+            <div className="orchestra-panel orchestra-source">
+              <span className="orchestra-step">01 · Récupération</span>
+              <div className="orchestra-file">
+                <span className="file-type">PDF</span>
+                <span className="file-copy"><strong>rapport_ventes.pdf</strong><small>Fichier récupéré</small></span>
+                <span className="node-check">✓</span>
+              </div>
+              <span className="orchestra-caption">Hermes a trouvé le document.</span>
+            </div>
+
+            <div className="orchestra-bridge bridge-in" aria-hidden="true"><span /></div>
+
+            <div className="orchestra-core">
+              <div className="orchestra-core-head">
+                <span className="orchestra-step">02 · Travail en parallèle</span>
+                <span className="agent-count"><i /> 3 agents actifs</span>
+              </div>
+              <div className="agent-grid">
+                <div className="orchestra-agent agent-hermes">
+                  <span className="agent-logo"><img src="/Hermes Agent Logo - Black - zonalogo.com.svg" alt="" width={28} height={28} /></span>
+                  <strong>Hermes</strong>
+                  <small>coordonne</small>
+                  <span className="agent-state">actif</span>
+                </div>
+                <div className="orchestra-agent agent-chatgpt">
+                  <span className="agent-logo"><img src="/chatgptai.png" alt="" width={28} height={28} /></span>
+                  <strong>ChatGPT</strong>
+                  <small>analyse le fichier</small>
+                  <span className="agent-state">analyse</span>
+                </div>
+                <div className="orchestra-agent agent-claude">
+                  <span className="agent-logo"><img src="/claudeai.png" alt="" width={28} height={28} /></span>
+                  <strong>Claude</strong>
+                  <small>recherche en ligne</small>
+                  <span className="agent-state">recherche</span>
+                </div>
+              </div>
+              <div className="agent-progress" aria-hidden="true"><span /><span /><span /><em>les agents se répondent</em></div>
+            </div>
+
+            <div className="orchestra-bridge bridge-out" aria-hidden="true"><span /></div>
+
+            <div className="orchestra-panel orchestra-result">
+              <span className="orchestra-step">03 · Synthèse</span>
+              <div className="result-icon">✦</div>
+              <strong>Brief prêt à lire</strong>
+              <span className="result-lines" aria-hidden="true"><i /><i /><i /></span>
+              <span className="orchestra-caption">Une réponse claire, sans aller-retour.</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      {/* ------------------------------ MÉTHODE (workflow) — conservée ------------------------------ */}
       <section className="section" id="methode">
         <div className="sec-head rv">
           <div>
@@ -514,12 +767,9 @@ export default function App() {
             </h2>
           </div>
           <p className="sec-note">
-            Voici un workflow réel — du message du client au récap du soir — et
-            l'interface qui le pilote. Tout est visible, tout est à vous.
+            Voici un workflow réel — du message du client au récap du soir — et l'interface qui le pilote. Tout est visible, tout est à vous.
           </p>
         </div>
-
-        {/* Workflow plein largeur */}
         <div className="win flow-full rv" style={{ ["--d" as string]: ".08s" }}>
           <div className="win-bar">
             <i /><i /><i />
@@ -545,10 +795,7 @@ export default function App() {
             <span className="flow-tech">Make / n8n · GPT-4o / Claude</span>
           </div>
         </div>
-
-        {/* Grille côte à côte : Playground OpenAI & Ce que ça fait */}
         <div className="method-details">
-          {/* Playground — OpenAI */}
           <div className="win rv" style={{ ["--d" as string]: ".12s" }}>
             <div className="win-bar">
               <i /><i /><i />
@@ -558,20 +805,12 @@ export default function App() {
             <div className="mock-body">
               <span className="mock-label">System prompt</span>
               <p className="mock-sys">
-                <b>« Tu es Koraline, assistante commerciale de Koffi Immobilier
-                (Angré).</b> Réponds en français, en 2–3 phrases max. Tu
-                connais les biens disponibles en temps réel via l'outil
-                stock_biens… »
+                <b>« Tu es Koraline, assistante commerciale de Koffi Immobilier (Angré).</b> Réponds en français, en 2–3 phrases max. Tu connais les biens disponibles en temps réel via l'outil stock_biens… »
               </p>
               <span className="mock-label">Conversation</span>
               <div className="mock-chat">
-                <p className="mock-line user">
-                  Le 3 pièces à Angré est toujours dispo ?
-                </p>
-                <p className="mock-line ai">
-                  Oui 👌 Je vous envoie les photos. Visite possible demain —
-                  10 h ou 16 h ?<span className="mock-cursor" />
-                </p>
+                <p className="mock-line user">Le 3 pièces à Angré est toujours dispo ?</p>
+                <p className="mock-line ai">Oui 👌 Je vous envoie les photos. Visite possible demain — 10 h ou 16 h ?<span className="mock-cursor" /></p>
               </div>
               <div className="mock-foot">
                 <span>Modèle — <b>gpt-4o</b></span>
@@ -580,8 +819,6 @@ export default function App() {
               </div>
             </div>
           </div>
-
-          {/* Ce que ça fait concrètement */}
           <div className="win checks-card rv" style={{ ["--d" as string]: ".18s" }}>
             <div className="win-bar">
               <i /><i /><i />
@@ -598,10 +835,7 @@ export default function App() {
                   </li>
                 ))}
               </ul>
-              <p className="checks-foot">
-                Chaque brique est <b>visible et modifiable</b>. Rien n'est caché
-                dans une boîte noire — vous gardez la main sur tout.
-              </p>
+              <p className="checks-foot">Chaque brique est <b>visible et modifiable</b>. Rien n'est caché dans une boîte noire — vous gardez la main sur tout.</p>
             </div>
           </div>
         </div>
@@ -613,35 +847,28 @@ export default function App() {
           <div>
             <span className="eyebrow">03 — Services</span>
             <h2 className="sec-title">
-              Cinq façons de <span className="it">récupérer votre temps.</span>
+              Quatre façons de récupérer votre temps et votre argent.
             </h2>
           </div>
           <p className="sec-note">
-            Une liste simple, sans piège. On commence petit, on mesure, on
-            étend. Chaque mission part de vos process — pas l'inverse.
+            Une liste simple, sans piège. On commence petit, on mesure, on étend. Chaque mission part de vos process — pas l'inverse.
           </p>
         </div>
 
         <div className="svc-list">
           {SERVICES.map((s, i) => (
             <a
-              className="svc rv"
+              className="svc svc-detailed rv"
               href="#contact"
               key={s.num}
               style={{ ["--d" as string]: `${i * 0.07}s` }}
             >
               <span className="svc-num">{s.num}</span>
               <span className="svc-body">
+                <span className="svc-cat">{s.cat}</span>
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
-              </span>
-              <span className="svc-tags">
-                {s.tags.map((t) => (
-                  <span className="tag" key={t}>
-                    {t}
-                  </span>
-                ))}
-                {s.hot && <span className="tag hot">{s.hot}</span>}
+                <span className="svc-benefit"><i aria-hidden="true">→</i> {s.benefit}</span>
               </span>
             </a>
           ))}
@@ -651,15 +878,12 @@ export default function App() {
       {/* ------------------------------ À PROPOS ------------------------------ */}
       <section className="section" id="a-propos">
         <div className="home-about-summary rv">
-          <span className="eyebrow">04 — À propos</span>
+          <span className="eyebrow">— 04 — LE BUILDER</span>
           <h2 className="sec-title">
-            Le pont entre la rigueur du chiffre{" "}
-            <span className="it">et la puissance de la machine.</span>
+            Comptable de formation. Architecte IA par obsession.
           </h2>
-          <p className="home-about-name">Yao Alex Mardochée KOFFI</p>
-          <p className="home-about-role">Responsable de la Transformation Digitale chez DC-KNOWING CGA</p>
-          <p className="home-about-punchline">« Le pont entre la rigueur du chiffre et la puissance de la machine. »</p>
-          <a className="btn primary" href="/a-propos">En savoir plus sur moi <IconArrow /></a>
+          <p className="home-about-text">J'ai vu, de l'intérieur, ce que les tâches répétitives font à une entreprise. Des journées entières perdues. Des erreurs humaines à 600 000 FCFA. Aujourd'hui, je ne théorise pas l'IA : je la déploie chez vous pour éliminer le travail manuel administratif.</p>
+          <a className="btn primary" href="/a-propos">Lire mon histoire <IconArrow /></a>
         </div>
       </section>
 
@@ -669,13 +893,13 @@ export default function App() {
           <span className="eyebrow">05 — On y va ?</span>
         </div>
         <h2 className="contact-giant rv" style={{ ["--d" as string]: ".08s" }}>
-          Discutons<span className="dot">.</span>
+          Discutons de vos besoins en automatisation<span className="dot">.</span>
         </h2>
         <p className="contact-sub rv" style={{ ["--d" as string]: ".16s" }}>
-          Une tâche qui vous mange vos journées ? Trois façons de commencer —{" "}
-          <b>je réponds sous 24 h</b>, en français, sans jargon. Et si
-          l'automatisation ne vaut pas le coup pour vous, je vous le dis
-          direct.
+          15 à 30 minutes d'échange sans engagement pour analyser vos goulots d'étranglement et voir si un accompagnement est pertinent.
+        </p>
+        <p className="contact-reassurance rv" style={{ ["--d" as string]: ".18s" }}>
+          Pas de blabla théorique. Un échange direct pour évaluer votre ROI potentiel.
         </p>
 
         <div className="contact-grid">

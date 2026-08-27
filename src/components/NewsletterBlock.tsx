@@ -49,11 +49,10 @@ export default function NewsletterBlock({ sourcePage = "global", compact = false
             <i>✦</i> Chaque vendredi matin · 08:00 GMT
           </span>
             <h3 className="nb-title">
-            Chaque vendredi, je t'envoie des astuces IA et mes outils gratuits par email.
+            Recevez mes astuces IA et outils gratuits.
           </h3>
           <p className="nb-sub">
-            Un conseil concret, un outil testé ou un cas réel d'entreprise ivoirienne.
-            Gratuit · Zéro spam · Désinscription en 1 clic.
+            Chaque vendredi, je t'envoie des cas pratiques d'automatisation et mes scripts par email. Zéro spam, désinscription en 1 clic.
           </p>
         </div>
 

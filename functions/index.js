@@ -53,9 +53,10 @@ exports.subscribeNewsletter = onRequest(
     }
 
     const listId = Number(process.env.BREVO_LIST_ID);
-    let apiKey = "";
+    let apiKey = process.env.BREVO_API_KEY || "";
     try {
-      apiKey = brevoApiKey.value();
+      const secretVal = brevoApiKey.value();
+      if (secretVal) apiKey = secretVal;
     } catch (error) {
       console.error("Brevo secret could not be read", error);
     }

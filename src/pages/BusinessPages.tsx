@@ -16,11 +16,38 @@ const STORIES = [
 ];
 
 const SERVICES = [
-  ["01", "Ventes & stock WhatsApp", "Commandes, catalogue, stock et alertes de rupture sans double saisie."],
-  ["02", "Employé digital 24/7", "Réponses clients, qualification de prospects et prise de rendez-vous."],
-  ["03", "Tableaux de bord", "Chiffre d'affaires, marges, stocks critiques et rapports quotidiens."],
-  ["04", "Factures & RH SYSCOHADA", "Lecture des factures, préparation des écritures et pointage terrain."],
-  ["05", "Audit Flash sur mesure", "Un diagnostic court, un prototype en 7 jours et une équipe formée."],
+  {
+    num: "01",
+    cat: "Automatisation & Gain de Temps",
+    title: "Zéro tâche répétitive",
+    desc: "Ne perdez plus des heures à faire les choses à la main. L'IA s'occupe de vos suivis, de vos messages et de vos classements en arrière-plan pendant que vous vous concentrez sur votre cœur de métier.",
+    benefit: "Un gain de temps massif et zéro erreur de saisie.",
+    points: ["Suivis et relances automatisés", "Classement intelligent des documents", "Processus visibles et modifiables"],
+  },
+  {
+    num: "02",
+    cat: "Ventes & Relation Client",
+    title: "Des ventes assurées 24h/24",
+    desc: "Ne ratez plus jamais un client. Vos outils répondent instantanément aux messages, conseillent vos visiteurs et enregistrent les demandes, même en dehors de vos horaires de travail.",
+    benefit: "Un taux de vente maximisé et des clients toujours satisfaits.",
+    points: ["Réponses instantanées 24h/24", "Qualification des demandes entrantes", "Prise de rendez-vous sans friction"],
+  },
+  {
+    num: "03",
+    cat: "Pilotage & Visibilité",
+    title: "Pilotage clair et sans prise de tête",
+    desc: "Pilotez votre activité avec une vision nette. Fini le pilotage à l'aveugle : l'IA analyse vos chiffres et vos performances pour vous dire clairement ce qui marche et où agir.",
+    benefit: "Des décisions rapides et éclairées, sans jargon incompréhensible.",
+    points: ["Tableaux de bord simples à lire", "Alertes sur les écarts critiques", "Rapports quotidiens orientés action"],
+  },
+  {
+    num: "04",
+    cat: "Solutions Adaptées",
+    title: "Des outils façonnés pour vous",
+    desc: "Une technologie qui s'adapte à votre réalité. Que vous gériez un commerce, un service ou une entreprise, nous concevons l'outil IA simple et direct qui correspond exactement à votre façon de travailler.",
+    benefit: "Une solution sur mesure qui grandit avec votre activité.",
+    points: ["Diagnostic de vos habitudes de travail", "Prototype rapide et mesurable", "Équipe formée pour garder la main"],
+  },
 ];
 
 export function StoriesPage() {
@@ -71,11 +98,24 @@ export function ServicesPage() {
     <div className="section landing-page">
       <header className="landing-hero">
         <span className="eyebrow">Services à Abidjan · PME ivoiriennes</span>
-        <h1>Cinq services d'automatisation et d'IA pour récupérer votre temps.</h1>
+        <h1>Quatre services d'automatisation et d'IA pour récupérer votre temps.</h1>
         <p>On commence par un problème mesurable : commandes, stock, relances, factures ou reporting.</p>
       </header>
       <div className="service-cards">
-        {SERVICES.map(([number, title, description]) => <article className="landing-card" key={number}><span className="eyebrow">{number}</span><h2>{title}</h2><p>{description}</p></article>)}
+        {SERVICES.map((service) => (
+          <article className="landing-card service-detail-card" key={service.num}>
+            <div className="service-card-top">
+              <span className="service-number">{service.num}</span>
+              <span className="service-category">{service.cat}</span>
+            </div>
+            <h2>{service.title}</h2>
+            <p>{service.desc}</p>
+            <ul className="service-points">
+              {service.points.map((point) => <li key={point}>{point}</li>)}
+            </ul>
+            <p className="service-benefit"><span aria-hidden="true">→</span> {service.benefit}</p>
+          </article>
+        ))}
       </div>
       <p className="landing-cta"><Link className="btn primary" to="/contact" data-cta="services_contact">Obtenir un audit offert de 30 minutes</Link></p>
     </div>

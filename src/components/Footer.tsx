@@ -33,7 +33,8 @@ export default function Footer() {
             Le pont entre la rigueur du chiffre et la puissance de la machine.
           </p>
           <a className="f-wa" href={WA_LINK} target="_blank" rel="noreferrer" data-cta="footer_whatsapp">
-            WhatsApp direct : <b>{WA_DISPLAY}</b>
+            <img className="footer-wa-logo" src="/whatsapp.jpg" alt="" width={22} height={22} aria-hidden="true" />
+            <span>WhatsApp direct : <b>{WA_DISPLAY}</b></span>
           </a>
           <a
             className="footer-linkedin"
@@ -41,7 +42,8 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            LinkedIn : voir mon profil
+            <img className="footer-linkedin-logo" src="/linkedin.png" alt="" width={20} height={20} aria-hidden="true" />
+            <span>LinkedIn : voir mon profil</span>
           </a>
         </div>
 
