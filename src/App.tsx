@@ -323,6 +323,36 @@ const SERVICES = [
   },
 ];
 
+const PROJECTS = [
+  {
+    name: "AXDress",
+    subtitle: "La couture sur-mesure africaine à portée de main",
+    image: "/axdress.png",
+    vitrine: "AXDress est une application mobile qui connecte les amateurs de mode africaine aux meilleurs couturiers d'Abidjan. Wax, bogolan, bazin : trouvez l'artisan vérifié près de chez vous, enregistrez vos mesures, explorez un catalogue de +120 modèles et suivez votre commande en temps réel. Essayez même vos vêtements virtuellement grâce à l'IA. Paiement sécurisé via Mobile Money, livraison incluse. +150 bêta-testeurs lui font déjà confiance.",
+    features: ["Couturiers vérifiés · identité & atelier", "Carnet de mesures personnel", "Géolocalisation ateliers proches", "Catalogue +120 modèles", "Paiement Mobile Money sécurisé", "Suivi temps réel + essai virtuel IA"],
+    stats: "4.9/5 · +150 bêta-testeurs",
+    tech: "Mobile App · IA · Géolocalisation · Mobile Money",
+  },
+  {
+    name: "RH Flow",
+    subtitle: "La solution RH 100% ivoirienne",
+    image: "/rhflow.png",
+    vitrine: "RH Flow est la solution RH 100% ivoirienne conçue par DC-KNOWING. Elle centralise et automatise l'ensemble de la gestion du personnel : contrats, dossiers, affectations, paie et déclarations fiscales (CNPS). Chaque collaborateur dispose d'un espace individuel pour suivre son historique, ses entretiens et ses objectifs. Finies les feuilles Excel : RH Flow digitalise toute la chaîne RH pour plus d'efficacité et de conformité.",
+    features: ["Contrats & dossiers centralisés", "Paie & déclarations CNPS automatisées", "Espace collaborateur individuel", "Demandes & validations temps réel"],
+    stats: "Web + Mobile · DC-KNOWING",
+    tech: "Web App · Mobile App · Automatisation · Paie",
+  },
+  {
+    name: "Koraline AI",
+    subtitle: "L'analyse intelligente de factures",
+    image: "/koraline.png",
+    vitrine: "Fini la saisie manuelle des factures. Koraline AI analyse automatiquement vos factures grâce à l'OCR et à l'IA (Némotron-3-Nano-Omni-30B). Déposez vos documents (PDF, PNG, JPG, WebP, HEIC — 30 Mo max) et l'IA extrait montant, TVA, date, fournisseur. Tri par statut et date, suivi des analyses. Un gain de temps considérable né de ma conviction que même depuis l'Afrique, on peut bâtir des systèmes aussi efficaces que ceux de l'Occident.",
+    features: ["Dépôt multi-formats 30 Mo", "OCR + Némotron-3-Nano-Omni-30B", "Tri par statut & date", "Suivi des analyses"],
+    stats: "OCR · Temps réel",
+    tech: "IA · OCR · Automatisation comptable",
+  },
+];
+
 /* ================================================================ */
 
 export default function App() {
@@ -876,10 +906,40 @@ export default function App() {
         </div>
       </section>
 
+      {/* ------------------------------ MES PROJETS ------------------------------ */}
+      <section className="section projects-section" id="projets">
+        <div className="sec-head rv">
+          <div>
+            <span className="eyebrow">— 04 — MES PROJETS</span>
+            <h2 className="sec-title">Trois projets qui incarnent ma vision :<br /><span className="it">utile, local, ambitieux.</span></h2>
+          </div>
+          <p className="sec-note">De la couture à la paie en passant par la compta : des outils pensés à Abidjan, pour l’Afrique — et construits pour durer.</p>
+        </div>
+        <div className="projects-grid">
+          {PROJECTS.map((p, i) => (
+            <article key={p.name} className="project-card rv" style={{ ["--d" as string]: `${i * 0.1}s` }}>
+              <div className="project-cover">
+                <img src={p.image} alt={`Aperçu ${p.name}`} loading="lazy" />
+                <span className="project-stats">{p.stats}</span>
+              </div>
+              <div className="project-body">
+                <span className="project-tech">{p.tech}</span>
+                <h3>{p.name}</h3>
+                <p className="project-sub">{p.subtitle}</p>
+                <p className="project-desc">{p.vitrine}</p>
+                <ul className="project-features">
+                  {p.features.map((f) => <li key={f}>{f}</li>)}
+                </ul>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
       {/* ------------------------------ À PROPOS ------------------------------ */}
       <section className="section" id="a-propos">
         <div className="home-about-summary rv">
-          <span className="eyebrow">— 04 — LE BUILDER</span>
+          <span className="eyebrow">— 05 — LE BUILDER</span>
           <h2 className="sec-title">
             Comptable de formation. Architecte IA par obsession.
           </h2>
@@ -891,7 +951,7 @@ export default function App() {
       {/* ------------------------------ CONVERSION ------------------------------ */}
       <section className="section contact" id="contact">
         <div className="rv">
-          <span className="eyebrow">05 — On y va ?</span>
+          <span className="eyebrow">06 — On y va ?</span>
         </div>
         <h2 className="contact-giant rv" style={{ ["--d" as string]: ".08s" }}>
           Discutons de vos besoins en automatisation<span className="dot">.</span>
