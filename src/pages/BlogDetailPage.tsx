@@ -274,6 +274,25 @@ export default function BlogDetailPage() {
             <span className="bc-cat">{article.category}</span>
           </nav>
 
+          <details className="toc-mobile" aria-label="Sommaire mobile">
+            <summary>Sommaire — {sections.length} sections</summary>
+            <nav className="toc-mobile-list" aria-label="Sommaire">
+              {sections.map((s, i) => (
+                <a key={s.id} href={`#${s.id}`} onClick={(e) => { e.preventDefault(); document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth" }); }}>
+                  <span className="toc-num">{String(i + 1).padStart(2, "0")}</span> {s.title}
+                </a>
+              ))}
+              <a href="#faq-anchor" onClick={(e) => { e.preventDefault(); document.getElementById("faq-anchor")?.scrollIntoView({ behavior: "smooth" }); }}>
+                <span className="toc-num">{String(sections.length + 1).padStart(2, "0")}</span> FAQ
+              </a>
+            </nav>
+            <div className="toc-mobile-actions">
+              <a className="en-bref-btn primary small" href={chatGptUrl} target="_blank" rel="noreferrer">Résumé ChatGPT</a>
+              <a className="en-bref-btn secondary small" href={claudeUrl} target="_blank" rel="noreferrer">Résumé Claude</a>
+              <button className="share-ico copy small" type="button" onClick={handleCopy} aria-label="Copier le lien">{copied ? "✓ Copié" : "⧉ Copier lien"}</button>
+            </div>
+          </details>
+
           <header className="article-header-new">
             <h1 className="article-title-new">{article.title}</h1>
             <p className="article-excerpt-new">{article.excerpt}</p>
@@ -291,9 +310,17 @@ export default function BlogDetailPage() {
             </div>
           </header>
 
-          {/* Hero image placeholder - accent */}
-          <div className="article-hero-image" aria-hidden="true">
-            <div className="hero-ai-badge">IA</div>
+          {/* Couverture éditoriale */}
+          <div className="article-hero-image">
+            {article.cover ? (
+              <>
+                <img className="article-cover" src={article.cover} alt={article.coverAlt ?? article.title} width={1280} height={520} />
+                <div className="article-cover-overlay" aria-hidden="true" />
+                <span className="hero-cover-label">{article.category}</span>
+              </>
+            ) : (
+              <div className="hero-ai-badge" aria-hidden="true">IA</div>
+            )}
           </div>
 
           {/* Sections numérotées */}
@@ -387,6 +414,25 @@ export default function BlogDetailPage() {
               <span key={t} className="tag-new">#{t}</span>
             ))}
           </div>
+
+          {article.sources && article.sources.length > 0 && (
+            <aside className="article-sources" aria-label="Sources de l'article">
+              <div className="article-sources-head">
+                <span className="section-badge small">↗</span>
+                <div>
+                  <strong>Sources vérifiées</strong>
+                  <span>Consultées pour préparer cet article.</span>
+                </div>
+              </div>
+              <ul>
+                {article.sources.map((source) => (
+                  <li key={source.url}>
+                    <a href={source.url} target="_blank" rel="noopener noreferrer">{source.label} ↗</a>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          )}
 
           {/* Newsletter bandeau bas */}
           <div className="article-newsletter-banner">

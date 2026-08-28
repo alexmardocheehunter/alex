@@ -16,7 +16,7 @@ export default function FormationsPage() {
             </p>
           </div>
 
-          <div className="formation-video-frame" role="img" aria-label="Aperçu vidéo d'une formation pratique">
+          <a className="formation-video-frame" href={COURSES[0].chariowUrl} target="_blank" rel="noreferrer" aria-label="Voir un extrait de la formation EXCEL & IA">
             <div className="video-topbar" aria-hidden="true">
               <span />
               <span />
@@ -25,13 +25,13 @@ export default function FormationsPage() {
               <small>01:24</small>
             </div>
             <div className="video-poster">
-              <img src={COURSES[0].cover} alt="" />
+              <img src={COURSES[0].cover} alt={`Couverture de la formation ${COURSES[0].name}`} loading="lazy" />
               <div className="video-poster-overlay" />
               <span className="video-play" aria-hidden="true">▶</span>
-              <span className="video-caption">Des cas concrets, des outils, une méthode.</span>
+              <span className="video-caption">Voir un extrait — des cas concrets, des outils, une méthode.</span>
             </div>
             <div className="video-progress" aria-hidden="true"><span /></div>
-          </div>
+          </a>
         </div>
       </section>
 
@@ -50,7 +50,7 @@ export default function FormationsPage() {
           {COURSES.map((course, index) => (
             <article key={course.id || course.slug} className="course-card rv" style={{ ["--d" as string]: `${index * 0.08}s` }}>
               <div className="course-cover">
-                <img src={course.cover} alt="" loading="lazy" />
+                <img src={course.cover} alt={`Couverture ${course.name}`} loading="lazy" />
                 <div className="course-cover-overlay" />
                 <span className="course-number">{String(index + 1).padStart(2, "0")}</span>
                 <strong>{course.discountLabel || course.category}</strong>
@@ -77,9 +77,9 @@ export default function FormationsPage() {
                       Découvrir <span aria-hidden="true">→</span>
                     </a>
                   ) : (
-                    <Link className="btn primary" to="/contact" data-cta="course_link_request">
-                      Demander le lien <span aria-hidden="true">→</span>
-                    </Link>
+                    <span className="btn primary" aria-disabled="true" style={{ opacity: .6, cursor: "not-allowed" }}>
+                      Lien bientôt disponible
+                    </span>
                   )}
                 </div>
               </div>

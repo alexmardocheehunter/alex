@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const WA_LINK = "https://wa.me/2250710073519?text=Bonjour%20Alex%2C%20je%20souhaite%20un%20audit%20de%20mon%20entreprise%20%C3%A0%20Abidjan.";
+const WA_DISPLAY = "+225 07 10 07 35 19";
 
 const STORIES = [
   ["Bijouterie à Cocody, Plateau et Marcory", "+10 h/semaine", "Rapport ventes et stock automatisé chaque soir."],
@@ -123,6 +125,31 @@ export function ServicesPage() {
 }
 
 export function ContactPage() {
+  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
+  const endpoint = (import.meta as unknown as { env: Record<string, string> }).env?.VITE_CONTACT_ENDPOINT || "";
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    if (String(data.get("website") || "").trim()) { form.reset(); setStatus("ok"); return; }
+    const payload = Object.fromEntries(data.entries());
+    setStatus("sending");
+    try {
+      if (endpoint) {
+        const r = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        if (!r.ok) throw new Error("endpoint");
+        setStatus("ok");
+        form.reset();
+      } else {
+        const subject = encodeURIComponent("Projet d'automatisation PME");
+        const body = encodeURIComponent(`Nom: ${payload.nom}\nEmail: ${payload.email}\n\n${payload.message}`);
+        window.location.href = `mailto:alexmardochee0@gmail.com?subject=${subject}&body=${body}`;
+        setStatus("ok");
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
   return (
     <div className="section landing-page contact-landing">
       <header className="landing-hero">
@@ -131,18 +158,36 @@ export function ContactPage() {
         <p>Décrivez votre situation en 2 minutes. Je vous réponds sous 24 heures, sans jargon et sans engagement.</p>
       </header>
       <div className="contact-landing-grid">
-        <div className="landing-card">
-          <h2>Le plus rapide : WhatsApp</h2>
-          <p>Envoyez votre tâche, votre volume approximatif et le résultat que vous aimeriez obtenir.</p>
-          <a className="btn primary" href={WA_LINK} target="_blank" rel="noreferrer" data-cta="contact_whatsapp">Écrire sur WhatsApp</a>
-          <p><a href="mailto:alexmardochee0@gmail.com">alexmardochee0@gmail.com</a></p>
+        <div className="landing-card whatsapp-cta-card">
+          <div className="whatsapp-cta-head">
+            <span className="whatsapp-cta-kicker"><i aria-hidden="true" /> WhatsApp direct</span>
+            <span className="whatsapp-cta-logo" aria-hidden="true">
+              <svg viewBox="0 0 64 64" role="presentation">
+                <circle cx="32" cy="32" r="30" fill="#25d366" />
+                <path fill="#fff" d="M21.7 20.3c-.3-.7-.7-.7-1.3-.7h-1.2c-.4 0-.9.1-1.3.6-.4.5-1.7 1.7-1.7 4.2s1.7 4.9 1.9 5.2c.2.3 3.3 5.3 8.1 7.2 4 1.6 4.8 1.3 5.7 1.2.9-.1 2.9-1.2 3.3-2.4.4-1.2.4-2.2.3-2.4-.1-.2-.5-.3-1.1-.6-.6-.3-3.4-1.7-3.9-1.9-.5-.2-.9-.3-1.3.3-.4.6-1.4 1.9-1.7 2.3-.3.4-.6.4-1.1.1-.6-.3-2.4-.9-4.5-2.8-1.7-1.5-2.8-3.3-3.1-3.9-.3-.6 0-.9.3-1.2.3-.3.6-.7.9-1 .3-.3.4-.6.6-1 .2-.4.1-.7 0-1.1-.1-.3-1.3-3.1-1.8-4.2Z" />
+              </svg>
+            </span>
+          </div>
+          <div className="whatsapp-cta-copy">
+            <h2>Gagnons du temps.<br /><span>Écrivez-moi directement.</span></h2>
+            <p>Un message suffit pour décrire la tâche qui vous ralentit. On regarde ensemble comment l’automatiser.</p>
+          </div>
+          <div className="whatsapp-cta-foot">
+            <a className="btn whatsapp-cta-button" href={WA_LINK} target="_blank" rel="noreferrer" data-cta="contact_whatsapp">
+              Écrire sur WhatsApp <span aria-hidden="true">↗</span>
+            </a>
+            <span className="whatsapp-cta-number">{WA_DISPLAY} · Réponse sous 24 h</span>
+          </div>
         </div>
-        <form className="landing-card contact-form" action="mailto:alexmardochee0@gmail.com" method="post" encType="text/plain" data-track-form="contact">
+        <form className="landing-card contact-form" onSubmit={onSubmit} data-track-form="contact" noValidate>
           <h2>Décrire mon besoin</h2>
           <label>Nom<input name="nom" required autoComplete="name" /></label>
           <label>Email<input name="email" type="email" required autoComplete="email" /></label>
           <label>Processus à automatiser<textarea name="message" required rows={5} /></label>
-          <button className="btn primary" type="submit" data-cta="contact_form">Envoyer ma demande</button>
+          <input className="hp" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: -9999 }} />
+          <button className="btn primary" type="submit" disabled={status === "sending"} data-cta="contact_form">{status === "sending" ? "Envoi…" : "Envoyer ma demande"}</button>
+          {status === "ok" && <p className="form-ok" role="status">✓ Message prêt — je vous réponds sous 24 h (ou vérifiez votre client mail si aucun endpoint n'est configuré).</p>}
+          {status === "error" && <p className="news-error" role="alert">L'envoi a échoué. Réessayez ou écrivez à alexmardochee0@gmail.com</p>}
         </form>
       </div>
     </div>

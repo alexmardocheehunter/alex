@@ -58,6 +58,11 @@ export default function BlogListPage() {
         <div className="blog-grid">
           {filteredArticles.map((art, idx) => (
             <article key={art.slug} className="blog-card rv" style={{ ["--d" as string]: `${idx * 0.08}s` }}>
+              {art.cover && (
+                <div className="blog-card-cover">
+                  <img src={art.cover} alt="" width={640} height={240} loading="lazy" />
+                </div>
+              )}
               <div className="bc-meta-top">
                 <span className="bc-category">{art.category}</span>
                 <span className="bc-readtime">✦ {art.readTime}</span>

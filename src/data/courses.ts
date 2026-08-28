@@ -74,7 +74,7 @@ export const COURSES: Course[] = [
   {
     id: "pack-money-reset",
     slug: "pack-money-reset",
-    name: "PACK MONEY RESET ( EBOOK, Ficher Excel + Guide )",
+    name: "PACK MONEY RESET ( EBOOK, Fichier Excel + Guide )",
     category: "Ebook & outils",
     description:
       "Le pack pratique pour reprendre le contrôle de votre argent avec un ebook, un fichier Excel et un guide d'utilisation.",

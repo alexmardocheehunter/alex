@@ -89,7 +89,7 @@ export default function Footer() {
             <i className="f2" />
             <i className="f3" />
           </span>
-          © 2026 — Conçu et déployé à Abidjan · <span className="clock">{clock}</span> GMT
+          © {new Date().getFullYear()} — Conçu et déployé à Abidjan · <span className="clock">{clock}</span> GMT
         </span>
         <span className="footer-sign">Même depuis l'Afrique, bâtir des systèmes d'excellence.</span>
       </div>

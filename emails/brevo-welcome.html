@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Bienvenue — Alex Mardochée</title>
+  <style>
+    /* Mobile */
+    @media only screen and (max-width:600px){
+      .container{width:100% !important}
+      .stack{ display:block !important; width:100% !important; }
+      .btn{ width:100% !important; box-sizing:border-box; text-align:center; }
+      .hero-title{ font-size:26px !important; line-height:30px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#faf7f0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">
+  <!-- Preheader caché -->
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#faf7f0;">
+    Bienvenue {{ contact.PRENOM }} — ton premier envoi arrive vendredi 08:00 GMT. En attendant, voilà comment ça va se passer.
+  </div>
+
+  <center style="width:100%; background-color:#faf7f0;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tr>
+        <td align="center" style="padding:24px 12px;">
+          <!-- Container 600 -->
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" class="container" style="width:600px; max-width:600px;">
+
+            <!-- Header -->
+            <tr>
+              <td align="center" style="padding:18px 0 14px;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                  <tr>
+                    <td align="left" style="vertical-align:middle;">
+                      <a href="https://alexmardochee.web.app" target="_blank" style="text-decoration:none;">
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+                          <td style="vertical-align:middle; padding-right:10px;">
+                            <img src="https://alexmardochee.web.app/logoalex.png" width="38" height="38" alt="A" style="display:block; width:38px; height:38px; border-radius:8px; border:1px solid #ece6d5; background:#ffffff;">
+                          </td>
+                          <td style="vertical-align:middle; font-family: Montserrat, Arial, sans-serif; font-size:11px; font-weight:800; letter-spacing:0.14em; color:#0a0a0a; text-transform:uppercase;">
+                            ALEX <span style="font-weight:900;">MARDOCHÉE</span><br><span style="font-size:9px; font-weight:600; letter-spacing:0.12em; color:#6b6252;">Automatisation &amp; IA — Abidjan</span>
+                          </td>
+                        </tr></table>
+                      </a>
+                    </td>
+                    <td align="right" style="font-family: Montserrat, Arial, sans-serif; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#8a8275;">
+                      Vendredi 08:00 GMT
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Hero Card -->
+            <tr>
+              <td style="background-color:#ffffff; border:1px solid #ece6d5; border-radius:16px; padding:28px 28px 22px;">
+                <!-- Badge -->
+                <div style="display:inline-block; background-color:#fff7e8; border:1px solid #f0d9a8; border-radius:999px; padding:6px 12px; font-family: Montserrat, Arial, sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; color:#b68c2e; text-transform:uppercase;">
+                  ✦ Bienvenue — tu es inscrit(e)
+                </div>
+
+                <h1 class="hero-title" style="margin:14px 0 10px; font-family: Montserrat, Arial, sans-serif; font-size:28px; line-height:32px; font-weight:900; letter-spacing:-0.02em; color:#0a0a0a;">
+                  Salut {{ contact.PRENOM | default:"là" }},<br>on se retrouve <span style="background-color:#0a0a0a; color:#ffffff; padding:2px 8px; border-radius:999px; font-style:italic; font-weight:800;">vendredi à 08:00</span>
+                </h1>
+
+                <p style="margin:0; font-family: Montserrat, Arial, sans-serif; font-size:14px; line-height:22px; color:#4a4338;">
+                  Merci pour ta confiance. Tu viens de rejoindre la lettre du vendredi d’<strong style="color:#0a0a0a;">Alex Mardochée</strong> — depuis Abidjan, pour les PME ivoiriennes qui veulent du concret, pas du blabla.
+                </p>
+
+                <div style="height:16px; line-height:16px;">&nbsp;</div>
+
+                <!-- Ce que tu vas recevoir -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#faf7f0; border:1px solid #ece6d5; border-radius:12px;">
+                  <tr>
+                    <td style="padding:16px 18px;">
+                      <p style="margin:0 0 10px; font-family: Montserrat, Arial, sans-serif; font-size:12px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:#0a0a0a;">
+                        Chaque vendredi, tu reçois gratuitement :
+                      </p>
+                      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                        <tr>
+                          <td style="padding:6px 0; font-family: Montserrat, Arial, sans-serif; font-size:13px; line-height:19px; color:#4a4338;">
+                            <span style="display:inline-block; width:22px; height:22px; line-height:22px; text-align:center; border-radius:999px; background-color:#ffffff; border:1px solid #ece6d5; font-size:11px; margin-right:8px;">1</span>
+                            <strong style="color:#0a0a0a;">1 cas réel</strong> d’une PME à Abidjan qui a automatisé un truc pénible
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding:6px 0; font-family: Montserrat, Arial, sans-serif; font-size:13px; line-height:19px; color:#4a4338;">
+                            <span style="display:inline-block; width:22px; height:22px; line-height:22px; text-align:center; border-radius:999px; background-color:#ffffff; border:1px solid #ece6d5; font-size:11px; margin-right:8px;">2</span>
+                            <strong style="color:#0a0a0a;">1 outil / template</strong> prêt à copier (n8n, Make, prompt, Excel)
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding:6px 0; font-family: Montserrat, Arial, sans-serif; font-size:13px; line-height:19px; color:#4a4338;">
+                            <span style="display:inline-block; width:22px; height:22px; line-height:22px; text-align:center; border-radius:999px; background-color:#ffffff; border:1px solid #ece6d5; font-size:11px; margin-right:8px;">3</span>
+                            <strong style="color:#0a0a0a;">1 point rapide</strong> SYSCOHADA / fiscalité pour éviter les pièges
+                          </td>
+                        </tr>
+                      </table>
+                      <p style="margin:10px 0 0; font-family: Montserrat, Arial, sans-serif; font-size:12px; line-height:18px; color:#8a8275; font-style:italic;">
+                        Zéro spam. Désinscription en 1 clic en bas de chaque email.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+
+                <div style="height:18px; line-height:18px;">&nbsp;</div>
+
+                <p style="margin:0; font-family: Montserrat, Arial, sans-serif; font-size:13px; line-height:21px; color:#4a4338;">
+                  Ton prochain email arrive <strong style="color:#0a0a0a;">ce vendredi à 08:00 GMT</strong>. En attendant, tu peux déjà faire 2 choses terre à terre :
+                </p>
+
+                <div style="height:18px; line-height:18px;">&nbsp;</div>
+
+                <!-- CTAs -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                  <tr>
+                    <td align="center" style="padding:0;">
+                      <!-- Bouton 1 LinkedIn — pill noire -->
+                      <a href="https://www.linkedin.com/in/alexmardoche/" target="_blank" class="btn" style="display:inline-block; background-color:#0a0a0a; color:#ffffff; font-family: Montserrat, Arial, sans-serif; font-size:13px; font-weight:700; line-height:20px; text-decoration:none; padding:13px 22px; border-radius:999px; border:1px solid #0a0a0a;">
+                        Me suivre sur LinkedIn &nbsp;→
+                      </a>
+                      <div style="height:10px; line-height:10px;">&nbsp;</div>
+                      <!-- Bouton 2 Newsletter — secondaire beige -->
+                      <a href="https://alexmardochee.web.app/newsletter" target="_blank" class="btn" style="display:inline-block; background-color:#ffffff; color:#0a0a0a; font-family: Montserrat, Arial, sans-serif; font-size:13px; font-weight:700; line-height:20px; text-decoration:none; padding:12px 22px; border-radius:999px; border:1px solid #d9a441;">
+                        S’inscrire / partager la newsletter &nbsp;✦
+                      </a>
+                      <p style="margin:8px 0 0; font-family: Montserrat, Arial, sans-serif; font-size:11px; line-height:16px; color:#8a8275;">
+                        Tous les vendredis matins, gratuitement. Tu peux partager ce lien à un collègue.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+
+              </td>
+            </tr>
+
+            <!-- Signature -->
+            <tr>
+              <td style="padding:18px 4px 0;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                  <tr>
+                    <td style="vertical-align:top; padding-right:14px; width:48px;">
+                      <img src="https://alexmardochee.web.app/photo-alex.png" width="48" height="48" alt="Alex Mardochée" style="display:block; width:48px; height:48px; border-radius:999px; border:1px solid #ece6d5; object-fit:cover;">
+                    </td>
+                    <td style="vertical-align:middle;">
+                      <p style="margin:0; font-family: Montserrat, Arial, sans-serif; font-size:13px; line-height:18px; font-weight:800; color:#0a0a0a;">Alex Mardochée</p>
+                      <p style="margin:2px 0 0; font-family: Montserrat, Arial, sans-serif; font-size:12px; line-height:18px; color:#6b6252;">Comptable → Architecte IA · DC-KNOWING CGA · Abidjan</p>
+                      <p style="margin:6px 0 0; font-family: Montserrat, Arial, sans-serif; font-size:12px; line-height:18px; color:#4a4338; font-style:italic;">
+                        “Même depuis l’Afrique, on peut bâtir des systèmes d’excellence.”
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Ps -->
+            <tr>
+              <td style="padding:14px 4px 0;">
+                <p style="margin:0; font-family: Montserrat, Arial, sans-serif; font-size:12px; line-height:19px; color:#8a8275; background-color:#ffffff; border:1px solid #ece6d5; border-left:3px solid #d9a441; border-radius:10px; padding:12px 14px;">
+                  <strong style="color:#0a0a0a;">P.S.</strong> Réponds directement à cet email si tu as une tâche qui te fait perdre du temps (facturation, stock, relances…). Je lis chaque réponse et je t’oriente — sans jargon.
+                </p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td align="center" style="padding:22px 8px 8px; font-family: Montserrat, Arial, sans-serif; font-size:11px; line-height:17px; color:#8a8275;">
+                <p style="margin:0;">
+                  <a href="https://alexmardochee.web.app" target="_blank" style="color:#0a0a0a; font-weight:700; text-decoration:none;">alexmardochee.web.app</a> &nbsp;·&nbsp;
+                  <a href="https://www.linkedin.com/in/alexmardoche/" target="_blank" style="color:#0a0a0a; font-weight:700; text-decoration:none;">LinkedIn</a> &nbsp;·&nbsp;
+                  <a href="https://alexmardochee.web.app/newsletter" target="_blank" style="color:#0a0a0a; font-weight:700; text-decoration:none;">Newsletter</a>
+                </p>
+                <p style="margin:8px 0 0;">
+                  Alex Mardochée — Abidjan, Côte d’Ivoire<br>
+                  Tu reçois cet email car tu t’es inscrit(e) sur <a href="https://alexmardochee.web.app/newsletter" target="_blank" style="color:#8a8275; text-decoration:underline;">alexmardochee.web.app/newsletter</a>
+                </p>
+                <p style="margin:12px 0 0;">
+                  <a href="{{ unsubscribe }}" target="_blank" style="color:#8a8275; text-decoration:underline;">Se désinscrire en 1 clic</a> &nbsp;·&nbsp;
+                  <a href="{{ mirror }}" target="_blank" style="color:#8a8275; text-decoration:underline;">Voir en ligne</a>
+                </p>
+                <p style="margin:12px 0 0; font-size:10px; color:#a99f8f;">
+                  Ne réponds pas à noreply@brevo — réponds à alexmardochee0@gmail.com
+                </p>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </center>
+</body>
+</html>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { trackEvent } from "./components/Analytics";
 import { SITE_FAQS } from "./seo";
@@ -883,7 +884,7 @@ export default function App() {
             Comptable de formation. Architecte IA par obsession.
           </h2>
           <p className="home-about-text">J'ai vu, de l'intérieur, ce que les tâches répétitives font à une entreprise. Des journées entières perdues. Des erreurs humaines à 600 000 FCFA. Aujourd'hui, je ne théorise pas l'IA : je la déploie chez vous pour éliminer le travail manuel administratif.</p>
-          <a className="btn primary" href="/a-propos">Lire mon histoire <IconArrow /></a>
+          <Link className="btn primary" to="/a-propos">Lire mon histoire <IconArrow /></Link>
         </div>
       </section>
 
