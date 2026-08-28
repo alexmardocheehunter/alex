@@ -63,7 +63,7 @@ export default function Header() {
       <div className="progress" ref={progressRef} aria-hidden="true" />
       <header className="nav" ref={navRef}>
         <Link className="brand" to="/">
-          <img className="brand-logo" src="/logo-alex.png?v=3" alt="Logo Alex Mardochée" width="45" height="45" loading="eager" decoding="async" />
+          <img className="brand-logo" src="/logoalex.png?v=4" alt="Logo Alex Mardochée" width="45" height="45" loading="eager" decoding="async" />
           <span className="brand-name">ALEX MARDOCHÉE</span>
         </Link>
         <nav aria-label="Navigation principale">
