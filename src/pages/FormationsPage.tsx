@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { COURSES } from "../data/courses";
 
 export default function FormationsPage() {

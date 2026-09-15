@@ -87,7 +87,7 @@ export const COURSES: Course[] = [
     lessonsLabel: "Pack de ressources pratiques",
     duration: "Ebook de 50 pages + outils",
     level: "Débutant · Intermédiaire",
-    chariowUrl: "",
+    chariowUrl: "https://alexmardoche.mychariow.shop/prd_d9irfc",
     cover: "/PACK MONEY RESET ( EBOOK, Ficher Excel + Guide ).avif",
     benefits: [
       "Ebook de 50 pages",
