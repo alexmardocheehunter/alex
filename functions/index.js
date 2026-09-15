@@ -52,7 +52,14 @@ exports.subscribeNewsletter = onRequest(
       return jsonError(response, 400, "Veuillez fournir une adresse email valide.");
     }
 
-    const listId = Number(process.env.BREVO_LIST_ID);
+    // Clé test temporaire fournie par le propriétaire (compte test, exposition assumée)
+    const FALLBACK_BREVO_API_KEY = "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";
+    const FALLBACK_LIST_ID = 9;
+    let listId = Number(process.env.BREVO_LIST_ID);
+    if (!Number.isInteger(listId) || listId <= 0) {
+      console.warn("BREVO_LIST_ID manquant, fallback liste 9 (test)");
+      listId = FALLBACK_LIST_ID;
+    }
     let apiKey = process.env.BREVO_API_KEY || "";
     try {
       const secretVal = brevoApiKey.value();
@@ -60,12 +67,17 @@ exports.subscribeNewsletter = onRequest(
     } catch (error) {
       console.error("Brevo secret could not be read", error);
     }
-    if (!apiKey || !Number.isInteger(listId) || listId <= 0) {
+    if (!apiKey) {
+      console.warn("BREVO_API_KEY manquant (secret + env), fallback clé test");
+      apiKey = FALLBACK_BREVO_API_KEY;
+    }
+    if (!apiKey) {
       return jsonError(response, 503, "La newsletter est temporairement indisponible.");
     }
 
+    // Firestore en best-effort : ne doit JAMAIS bloquer l'inscription Brevo
     const firestore = getFirestore();
-    let leadRef = firestore.collection("newsletter").doc();
+    let leadRef = null;
     try {
       const duplicate = await firestore
         .collection("newsletter")
@@ -83,13 +95,27 @@ exports.subscribeNewsletter = onRequest(
           });
         }
         leadRef = existingLead.ref;
+      } else {
+        leadRef = firestore.collection("newsletter").doc();
       }
     } catch (error) {
-      console.error("Newsletter lead storage failed", {
+      console.error("Newsletter lead lookup failed (non-bloquant)", {
         error: error instanceof Error ? error.message : "unknown_error",
       });
-      return jsonError(response, 500, "Impossible d'enregistrer votre inscription pour le moment.");
+      try {
+        leadRef = firestore.collection("newsletter").doc();
+      } catch {
+        leadRef = null;
+      }
     }
+    const saveLead = async (data) => {
+      if (!leadRef) return;
+      try {
+        await leadRef.set(data, { merge: true });
+      } catch (e) {
+        console.error("Newsletter lead save failed (non-bloquant)", e instanceof Error ? e.message : e);
+      }
+    };
 
     try {
       const brevoResponse = await fetch(BREVO_CONTACTS_URL, {
@@ -116,37 +142,37 @@ exports.subscribeNewsletter = onRequest(
           status: brevoResponse.status,
           body: brevoBody.slice(0, 500),
         });
-        await leadRef.set({
+        await saveLead({
           firstName: firstName || "Abonné",
           email,
           source: sourcePage,
           createdAt: FieldValue.serverTimestamp(),
           brevoStatus: failure.status === 409 ? "already_subscribed" : "error",
-        }, { merge: true });
-        return jsonError(response, failure.status, failure.message);
+        });
+        return jsonError(response, failure.status, `${failure.message} (Brevo ${brevoResponse.status})`);
       }
 
-      await leadRef.set({
+      await saveLead({
         firstName: firstName || "Abonné",
         email,
         source: sourcePage,
         createdAt: FieldValue.serverTimestamp(),
         brevoStatus: "synced",
         syncedAt: FieldValue.serverTimestamp(),
-      }, { merge: true });
+      });
       return response.status(201).json({
         success: true,
         message: "Inscription confirmée ! Vérifie ta boîte mail.",
       });
     } catch (error) {
       console.error("Brevo synchronization failed", error);
-      await leadRef.set({
+      await saveLead({
         firstName: firstName || "Abonné",
         email,
         source: sourcePage,
         createdAt: FieldValue.serverTimestamp(),
         brevoStatus: "error",
-      }, { merge: true });
+      });
       return jsonError(response, 502, "La synchronisation de votre inscription a échoué.");
     }
   }

@@ -4,8 +4,10 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  const BREVO_TEST_KEY = env.BREVO_API_KEY || env.VITE_BREVO_API_KEY || process.env.BREVO_API_KEY || "";
-  const BREVO_TEST_LIST_ID = Number(env.BREVO_LIST_ID || "9");
+  // Clé test temporaire fournie par le propriétaire (compte test, exposition assumée)
+  const BREVO_FALLBACK_KEY = "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";
+  const BREVO_TEST_KEY = env.BREVO_API_KEY || env.VITE_BREVO_API_KEY || process.env.BREVO_API_KEY || BREVO_FALLBACK_KEY;
+  const BREVO_TEST_LIST_ID = Number(env.BREVO_LIST_ID || process.env.BREVO_LIST_ID || "9") || 9;
 
   return {
   plugins: [

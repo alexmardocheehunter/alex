@@ -16,6 +16,9 @@ export const PRERENDER_ROUTES = [
   ...BLOG_ARTICLES.map((article) => `/blog/${article.slug}`),
   "/formations",
   "/newsletter",
+  "/ia-system-blueprint",
+  "/formation/ia-system-blueprint",
+  "/waitlist",
 ];
 
 export function render(url: string) {

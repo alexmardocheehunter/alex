@@ -219,6 +219,21 @@ export function getSeoForPath(pathname: string): SeoData {
       description: "Chaque vendredi à 08h, recevez 1 cas concret, 1 outil testé et 1 méthode pour gagner du temps dans votre entreprise ivoirienne.",
       label: "Newsletter",
     },
+    "/ia-system-blueprint": {
+      title: "IA System Blueprint — Liste d'attente | Alex Mardochée",
+      description: "Rejoins la liste pour recevoir toute ma formation IA System Blueprint : des vidéos où je parle, je montre et on teste ensemble — tout mon savoir, sans rien garder.",
+      label: "IA System Blueprint",
+    },
+    "/formation/ia-system-blueprint": {
+      title: "IA System Blueprint — Liste d'attente | Alex Mardochée",
+      description: "Rejoins la liste pour recevoir toute ma formation IA System Blueprint : des vidéos où je parle, je montre et on teste ensemble — tout mon savoir, sans rien garder.",
+      label: "IA System Blueprint",
+    },
+    "/waitlist": {
+      title: "IA System Blueprint — Liste d'attente | Alex Mardochée",
+      description: "Rejoins la liste pour recevoir toute ma formation IA System Blueprint : des vidéos où je parle, je montre et on teste ensemble — tout mon savoir, sans rien garder.",
+      label: "IA System Blueprint",
+    },
   };
 
   const page = pages[cleanPath] ?? {

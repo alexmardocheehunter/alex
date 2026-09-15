@@ -58,9 +58,18 @@ export default function Header() {
     </>
   );
 
+  const isLeadPage = location.pathname === "/ia-system-blueprint" || location.pathname === "/formation/ia-system-blueprint" || location.pathname === "/waitlist";
+
   return (
     <>
       <div className="progress" ref={progressRef} aria-hidden="true" />
+      {!isLeadPage && (
+        <Link to="/ia-system-blueprint" className="event-banner" data-cta="header_event_blueprint">
+          <span className="event-pulse" aria-hidden="true" />
+          <span className="event-text"><strong>Événement en cours :</strong> Formation IA System Blueprint — liste d’attente ouverte, inscris-toi gratuitement</span>
+          <span className="event-cta" aria-hidden="true">Rejoindre →</span>
+        </Link>
+      )}
       <header className="nav" ref={navRef}>
         <Link className="brand" to="/">
           <img className="brand-logo" src="/logoalex.png?v=4" alt="Logo Alex Mardochée" width="45" height="45" loading="eager" decoding="async" />

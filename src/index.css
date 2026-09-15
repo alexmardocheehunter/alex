@@ -68,6 +68,55 @@ img {
   max-width: 100%;
 }
 
+/* ============================ EVENT BANNER ============================ */
+.event-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 9px 16px;
+  background: #0a0a0a;
+  color: #faf7f0;
+  text-decoration: none;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  border-bottom: 1px solid rgba(217, 164, 65, 0.4);
+}
+.event-banner:hover { background: #1a1a1a; }
+.event-pulse {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d9a441;
+  animation: eventPulse 1.6s ease-in-out infinite;
+}
+@keyframes eventPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+.event-text strong { color: #d9a441; }
+.event-cta {
+  flex: none;
+  font-weight: 700;
+  color: #0a0a0a;
+  background: #d9a441;
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+.event-banner + .nav { top: 37px; }
+@media (max-width: 640px) {
+  .event-text { font-size: 0.72rem; }
+  .event-cta { display: none; }
+}
+
 /* ============================ NAV ============================ */
 .progress {
   position: fixed;
@@ -2819,7 +2868,7 @@ main {
   .nav nav { display: none; }
   .nav-newsletter-btn { padding: 8px 9px; font-size: .62rem; }
   .nav-menu-toggle { display: block; }
-  .mobile-nav { position: fixed; z-index: 49; inset: 66px 0 auto; display: flex; flex-direction: column; gap: 0; padding: 12px 5vw 18px; background: rgba(0,0,0,.96); border-bottom: 1px solid var(--beige-10); }
+  .mobile-nav { position: fixed; z-index: 49; inset: 103px 0 auto; display: flex; flex-direction: column; gap: 0; padding: 12px 5vw 18px; background: rgba(0,0,0,.96); border-bottom: 1px solid var(--beige-10); }
   .mobile-nav a { padding: 13px 0; color: var(--white); border-bottom: 1px solid var(--beige-10); font-size: .75rem; letter-spacing: .1em; text-decoration: none; text-transform: uppercase; }
   .mobile-nav a:last-child { border-bottom: 0; }
   .about-page-view, .blog-page, .article-detail-page, .newsletter-page-view, .formations-page { padding-top: 0; }

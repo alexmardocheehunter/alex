@@ -13,6 +13,7 @@ import BlogDetailPage from "./pages/BlogDetailPage";
 import BlogListPage from "./pages/BlogListPage";
 import FormationsPage from "./pages/FormationsPage";
 import NewsletterPage from "./pages/NewsletterPage";
+import LeadIaSystemPage from "./pages/LeadIaSystemPage";
 import { ContactPage, MethodPage, ServicesPage, StoriesPage } from "./pages/BusinessPages";
 
 function PageEffects() {
@@ -90,17 +91,35 @@ export function AppRoutes() {
           <Route path="/blog/:slug" element={<BlogDetailPage />} />
           <Route path="/formations" element={<FormationsPage />} />
           <Route path="/newsletter" element={<NewsletterPage />} />
+          <Route path="/ia-system-blueprint" element={<LeadIaSystemPage />} />
+          <Route path="/formation/ia-system-blueprint" element={<LeadIaSystemPage />} />
+          <Route path="/waitlist" element={<LeadIaSystemPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
 
 export function AppContent() {
+  const location = useLocation();
+  const isLeadPage = ["/ia-system-blueprint", "/formation/ia-system-blueprint", "/waitlist"].includes(location.pathname);
+  if (isLeadPage) {
+    return (
+      <>
+        <Seo />
+        <Analytics />
+        <LeadIaSystemPage />
+      </>
+    );
+  }
   return (
     <Layout>
       <AppRoutes />
     </Layout>
   );
+}
+
+export function LeadApp() {
+  return <LeadIaSystemPage />;
 }
 
 export default function AppRouter() {
