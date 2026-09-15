@@ -4,9 +4,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  // Clé test temporaire fournie par le propriétaire (compte test, exposition assumée)
-  const BREVO_FALLBACK_KEY = "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";
-  const BREVO_TEST_KEY = env.BREVO_API_KEY || env.VITE_BREVO_API_KEY || process.env.BREVO_API_KEY || BREVO_FALLBACK_KEY;
+  // Clé lue UNIQUEMENT depuis l'environnement local (.env, gitignoré) — jamais en dur.
+  const BREVO_TEST_KEY = env.BREVO_API_KEY || env.VITE_BREVO_API_KEY || process.env.BREVO_API_KEY || "";
   const BREVO_TEST_LIST_ID = Number(env.BREVO_LIST_ID || process.env.BREVO_LIST_ID || "9") || 9;
 
   return {
@@ -42,6 +41,13 @@ export default defineConfig(({ mode }) => {
                 res.statusCode = 400;
                 res.setHeader("Content-Type", "application/json");
                 res.end(JSON.stringify({ success: false, message: "Veuillez fournir une adresse email valide." }));
+                return;
+              }
+              if (!BREVO_TEST_KEY) {
+                console.error("[dev-proxy] BREVO_API_KEY manquante : renseigne-la dans .env (local, gitignoré).");
+                res.statusCode = 503;
+                res.setHeader("Content-Type", "application/json");
+                res.end(JSON.stringify({ success: false, message: "Clé Brevo manquante en local : ajoute BREVO_API_KEY dans .env puis relance Vite." }));
                 return;
               }
               const r = await fetch("https://api.brevo.com/v3/contacts", {

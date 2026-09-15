@@ -63,12 +63,18 @@ jobs:
       - name: Configure Functions environment
         env:
           BREVO_LIST_ID: '${{ secrets.BREVO_LIST_ID }}'
+          BREVO_API_KEY: '${{ secrets.BREVO_API_KEY }}'
         run: |
           if [ -z "$BREVO_LIST_ID" ]; then
             echo "Missing required GitHub secret: BREVO_LIST_ID"
             exit 1
           fi
           printf 'BREVO_LIST_ID=%s\n' "$BREVO_LIST_ID" > functions/.env
+          if [ -z "$BREVO_API_KEY" ]; then
+            echo "::warning title=Secret Brevo manquant::Ajoute le secret BREVO_API_KEY (nouvelle clé générée dans Brevo) pour activer les inscriptions. Le déploiement continue sans lui."
+          else
+            printf 'BREVO_API_KEY=%s\n' "$BREVO_API_KEY" >> functions/.env
+          fi
 
       - name: Deploy Hosting and Functions
         env:

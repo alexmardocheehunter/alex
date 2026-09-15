@@ -52,13 +52,13 @@ exports.subscribeNewsletter = onRequest(
       return jsonError(response, 400, "Veuillez fournir une adresse email valide.");
     }
 
-    // Clé test temporaire fournie par le propriétaire (compte test, exposition assumée)
-    const FALLBACK_BREVO_API_KEY = "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";
-    const FALLBACK_LIST_ID = 9;
+    // Secrets UNIQUEMENT via Secret Manager (prod) ou variables d'environnement
+    // injectées au déploiement (functions/.env généré par la CI) — jamais en dur.
+    const DEFAULT_LIST_ID = 9;
     let listId = Number(process.env.BREVO_LIST_ID);
     if (!Number.isInteger(listId) || listId <= 0) {
-      console.warn("BREVO_LIST_ID manquant, fallback liste 9 (test)");
-      listId = FALLBACK_LIST_ID;
+      console.warn("BREVO_LIST_ID manquant, utilisation de la liste par défaut 9");
+      listId = DEFAULT_LIST_ID;
     }
     let apiKey = process.env.BREVO_API_KEY || "";
     try {
@@ -68,10 +68,7 @@ exports.subscribeNewsletter = onRequest(
       console.error("Brevo secret could not be read", error);
     }
     if (!apiKey) {
-      console.warn("BREVO_API_KEY manquant (secret + env), fallback clé test");
-      apiKey = FALLBACK_BREVO_API_KEY;
-    }
-    if (!apiKey) {
+      console.error("BREVO_API_KEY manquant (ni Secret Manager ni env) — inscription impossible");
       return jsonError(response, 503, "La newsletter est temporairement indisponible.");
     }
 
