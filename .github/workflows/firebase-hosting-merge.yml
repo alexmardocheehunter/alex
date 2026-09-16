@@ -70,10 +70,13 @@ jobs:
             exit 1
           fi
           printf 'BREVO_LIST_ID=%s\n' "$BREVO_LIST_ID" > functions/.env
+          # La clé API va dans Secret Manager (la fonction la lit via
+          # defineSecret). Ne JAMAIS la mettre dans functions/.env : Cloud
+          # Functions refuse une variable à la fois secrète et non secrète.
           if [ -z "$BREVO_API_KEY" ]; then
             echo "::warning title=Secret Brevo manquant::Ajoute le secret BREVO_API_KEY (nouvelle clé générée dans Brevo) pour activer les inscriptions. Le déploiement continue sans lui."
           else
-            printf 'BREVO_API_KEY=%s\n' "$BREVO_API_KEY" >> functions/.env
+            printf '%s' "$BREVO_API_KEY" | npx --yes firebase-tools@latest functions:secrets:set BREVO_API_KEY --data-file - --project alexmardochee
           fi
 
       - name: Deploy Hosting and Functions
